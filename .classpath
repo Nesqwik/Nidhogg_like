@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="images"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lille-game-framework"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/opendev-team2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
