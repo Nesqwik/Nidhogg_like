@@ -40,6 +40,11 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	}
 	
 	
+	/**
+	 * First method called
+	 * 
+	 * @param args Command line parameters
+	 */
 	public static void main(String[] args) {
 		GameConfiguration configuration = new GameConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
 		final GameData gameData = new GameData(configuration);
