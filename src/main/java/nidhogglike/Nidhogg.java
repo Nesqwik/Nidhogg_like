@@ -1,6 +1,5 @@
-package nidhogg;
+package nidhogglike;
 
-import nidhogg.entities.Player;
 import gameframework.drawing.GameUniverseViewPortDefaultImpl;
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
@@ -8,7 +7,6 @@ import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
 import gameframework.motion.MoveStrategyKeyboard;
 import gameframework.motion.MoveStrategyKeyboard8Dir;
-
 /**
  * @author Team 2
  * 
