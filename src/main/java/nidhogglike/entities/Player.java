@@ -1,4 +1,4 @@
-package nidhogglike;
+package nidhogglike.entities;
 
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovable;
@@ -10,6 +10,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+/**
+ * @author Team 2
+ *
+ * Class representing a player controlled by the keyboard
+ */
 public class Player extends GameMovable implements GameEntity{
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	
@@ -31,7 +36,8 @@ public class Player extends GameMovable implements GameEntity{
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(new Color(50, 200, 40));
-		g.fillRect(this.getPosition().x, this.getPosition().y, 10, 10);
+		g.fillRect(this.getPosition().x, this.getPosition().y,
+				(int) getBoundingBox().getWidth(), (int) getBoundingBox().getHeight());
 		
 	}
 

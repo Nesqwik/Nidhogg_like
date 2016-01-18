@@ -1,5 +1,6 @@
 package nidhogglike;
 
+import nidhogglike.entities.Player;
 import gameframework.drawing.GameUniverseViewPortDefaultImpl;
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
