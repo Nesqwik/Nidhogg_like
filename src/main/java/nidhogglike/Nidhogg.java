@@ -1,6 +1,10 @@
 package nidhogglike;
 
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+
 import nidhogglike.entities.Player;
+import nidhogglike.input.Input;
 import gameframework.drawing.GameUniverseViewPortDefaultImpl;
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
@@ -8,6 +12,7 @@ import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
 import gameframework.motion.MoveStrategyKeyboard;
 import gameframework.motion.MoveStrategyKeyboard8Dir;
+import gameframework.motion.SpeedVector;
 /**
  * @author Team 2
  * 
@@ -31,12 +36,13 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	 */
 	@Override
 	protected void init() {
-		final MoveStrategyKeyboard strategyKeyBoard = new MoveStrategyKeyboard8Dir(false);
+		final MoveStrategyKeyboard strategyKeyBoard = new MoveStrategyKeyboard(false);
 		data.getCanvas().addKeyListener(strategyKeyBoard);
+		final Input input = new Input(data.getCanvas());
 		this.gameBoard = new GameUniverseViewPortDefaultImpl();
 		this.gameBoard.setGameData(data);
 		
-		universe.addGameEntity(new Player(strategyKeyBoard));
+		universe.addGameEntity(new Player(strategyKeyBoard, input));
 	}
 	
 	

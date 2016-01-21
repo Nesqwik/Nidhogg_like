@@ -9,6 +9,10 @@ import gameframework.motion.MoveStrategyKeyboard;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+
+import nidhogglike.input.Input;
+
 
 /**
  * @author Team 2
@@ -17,10 +21,19 @@ import java.awt.Rectangle;
  */
 public class Player extends GameMovable implements GameEntity{
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
+	protected float velocity_y;
+	private static float GRAVITY = 1f;
+	private static float VELOCITY_Y_MAX = 10;
+	private static int JUMP_HEIGHT = 10;
+	private boolean jumping;
+	private int jumpHeight;
+	private Input input;
 	
-	public Player(MoveStrategyKeyboard strategyKeyBoard){
+	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input){
 		super(gameDriver);
 		gameDriver.setStrategy(strategyKeyBoard);
+		jumping = false;
+		this.input = input;
 	}
 	
 	@Override
@@ -30,7 +43,24 @@ public class Player extends GameMovable implements GameEntity{
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
-		// TODO
+		if (input.isPressed(KeyEvent.VK_SPACE) && jumpHeight < JUMP_HEIGHT) {
+			velocity_y = -10;
+			jumping = true;
+			++jumpHeight;
+		}
+		
+		// Apply gravity
+		velocity_y += GRAVITY;
+		velocity_y = Math.min(velocity_y, VELOCITY_Y_MAX);
+		this.getPosition().y += velocity_y;
+
+		// Collision with the ground
+		if (this.getPosition().y > 200) {
+			this.getPosition().y = 200;
+			jumping = false;
+			jumpHeight = 0;
+			velocity_y = 0;
+		}
 	}
 
 	@Override
