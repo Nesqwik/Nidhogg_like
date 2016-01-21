@@ -68,6 +68,7 @@ public class Player extends GameMovable implements GameEntity{
 		// TODO : Nicolas, regarde ça pour éviter les if ! <3<3<3
 		if(this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
+			
 		} else if(this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
