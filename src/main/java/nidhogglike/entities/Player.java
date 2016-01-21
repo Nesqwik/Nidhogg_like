@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
+import nidhogglike.Nidhogg;
 import nidhogglike.input.Input;
 
 
@@ -20,6 +21,7 @@ import nidhogglike.input.Input;
  * Class representing a player controlled by the keyboard
  */
 public class Player extends GameMovable implements GameEntity{
+	private static final int GROUND_Y = 288;
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	protected float velocity_y;
 	private static float GRAVITY = 1f;
@@ -55,11 +57,19 @@ public class Player extends GameMovable implements GameEntity{
 		this.getPosition().y += velocity_y;
 
 		// Collision with the ground
-		if (this.getPosition().y > 200) {
-			this.getPosition().y = 200;
+		if (this.getPosition().y > GROUND_Y) {
+			this.getPosition().y = GROUND_Y;
 			jumping = false;
 			jumpHeight = 0;
 			velocity_y = 0;
+		}
+		
+		// When the player goes out of bounds
+		// TODO : Nicolas, regarde ça pour éviter les if ! <3<3<3
+		if(this.getPosition().x > Nidhogg.WIDTH) {
+			this.getPosition().x = -this.getBoundingBox().width;
+		} else if(this.getPosition().x < -this.getBoundingBox().width) {
+			this.getPosition().x = Nidhogg.WIDTH;
 		}
 	}
 
