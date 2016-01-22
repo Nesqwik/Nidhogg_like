@@ -4,6 +4,7 @@ import gameframework.drawing.DrawableImage;
 import gameframework.drawing.GameCanvas;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
+import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriver;
@@ -29,23 +30,28 @@ public class Player extends GameMovable implements GameEntity{
 	private static final int GROUND_Y = 368;
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	protected float velocity_y;
-	private static float GRAVITY = 1f;
 	private static float VELOCITY_Y_MAX = 10;
+	private static float GRAVITY = 1f;
 	private static int JUMP_HEIGHT = 10;
 	private boolean jumping;
+	private boolean holdingSword;
 	private int jumpHeight;
 	private Input input;
 	private SpriteManager sprite;
 	private int incrementStep;
+	private GameData data;
 	
-	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input, GameCanvas canvas){
+	
+	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input, GameData data){
 		super(gameDriver);
 		gameDriver.setStrategy(strategyKeyBoard);
 		jumping = false;
+		holdingSword = true;
 		incrementStep = 0;
 		this.input = input;
+		this.data = data;
 		URL playerImage = this.getClass().getResource("/images/player.png");
-		DrawableImage drawableImage = new DrawableImage(playerImage, canvas);
+		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
 	}
 	
@@ -60,6 +66,10 @@ public class Player extends GameMovable implements GameEntity{
 			velocity_y = -10;
 			jumping = true;
 			++jumpHeight;
+		}else if(input.isPressed(KeyEvent.VK_SHIFT) && holdingSword){
+			// Sword throwing
+			holdingSword = false;
+			data.getUniverse().addGameEntity(new Throwable(this, data, this.getPosition().x, this.getPosition().y, 1));
 		}
 		
 		// Apply gravity
@@ -100,4 +110,12 @@ public class Player extends GameMovable implements GameEntity{
 		sprite.draw(g, position);
 	}
 
+	public boolean isHoldingSword() {
+		return holdingSword;
+	}
+
+	public void setHoldingSword(boolean holdingSword) {
+		this.holdingSword = holdingSword;
+	}
+	
 }
