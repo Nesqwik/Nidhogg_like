@@ -15,7 +15,7 @@ public class Wall implements MoveBlocker, GameEntity {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(350, 350, 100, 100);
+		return new Rectangle(350, 200, 100, 100);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class Wall implements MoveBlocker, GameEntity {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(new Color(150,150,150));
-		g.fillRect(350, 350, 100, 100);
+		g.fillRect(350, 200, 100, 100);
 	}
 
 }

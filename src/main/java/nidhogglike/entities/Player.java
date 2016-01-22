@@ -9,6 +9,7 @@ import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriver;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyKeyboard;
+import gameframework.motion.blocking.MoveBlocker;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -100,4 +101,9 @@ public class Player extends GameMovable implements GameEntity{
 		sprite.draw(g, position);
 	}
 
+	@Override
+	public void onMoveFailure(MoveBlocker lastBlockingBlocker) {
+		velocity_y = 0;
+		this.getPosition().y += 20;
+	}
 }
