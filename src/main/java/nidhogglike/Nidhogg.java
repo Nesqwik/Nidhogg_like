@@ -2,6 +2,7 @@ package nidhogglike;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.util.Date;
 
 import nidhogglike.entities.Player;
 import nidhogglike.input.Input;
@@ -10,9 +11,14 @@ import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
+import gameframework.motion.GameMovable;
+import gameframework.motion.IllegalMoveException;
 import gameframework.motion.MoveStrategyKeyboard;
 import gameframework.motion.MoveStrategyKeyboard8Dir;
 import gameframework.motion.SpeedVector;
+import gameframework.motion.blocking.MoveBlocker;
+import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
+import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImplTest;
 /**
  * @author Team 2
  * 
@@ -43,6 +49,29 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard.setGameData(data);
 		
 		universe.addGameEntity(new Player(strategyKeyBoard, input, data.getCanvas()));
+		universe.addGameEntity(new Wall());
+	}
+	
+	@Override
+	public void run() {
+		stopGameLoop = false;
+		// main game loop :
+		long start;
+		while (!stopGameLoop && !this.isInterrupted()) {
+			start = new Date().getTime();
+			gameBoard.paint();
+			universe.allOneStepMoves();
+			universe.processAllOverlaps();
+			long sleepTime = minimumDelayBetweenCycles
+					- (new Date().getTime() - start);
+			if (sleepTime > 0) {
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					// that's ok, we just didn't managed to finish sleeping
+				}
+			}
+		}
 	}
 	
 	
@@ -52,7 +81,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	 * @param args Command line parameters
 	 */
 	public static void main(String[] args) {
-		GameConfiguration configuration = new GameConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
+		NidhoggConfiguration configuration = new NidhoggConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
 		final GameData gameData = new GameData(configuration);
 		GameWindow gameWindow = new GameWindow("Nidhogg", gameData.getCanvas(), gameData);
 		
