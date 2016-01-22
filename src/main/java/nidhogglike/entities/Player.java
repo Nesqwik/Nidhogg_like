@@ -1,5 +1,9 @@
 package nidhogglike.entities;
 
+import gameframework.drawing.DrawableImage;
+import gameframework.drawing.GameCanvas;
+import gameframework.drawing.SpriteManager;
+import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriver;
@@ -10,6 +14,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.input.Input;
@@ -21,7 +26,7 @@ import nidhogglike.input.Input;
  * Class representing a player controlled by the keyboard
  */
 public class Player extends GameMovable implements GameEntity{
-	private static final int GROUND_Y = 288;
+	private static final int GROUND_Y = 368;
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	protected float velocity_y;
 	private static float GRAVITY = 1f;
@@ -30,12 +35,18 @@ public class Player extends GameMovable implements GameEntity{
 	private boolean jumping;
 	private int jumpHeight;
 	private Input input;
+	private SpriteManager sprite;
+	private int incrementStep;
 	
-	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input){
+	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input, GameCanvas canvas){
 		super(gameDriver);
 		gameDriver.setStrategy(strategyKeyBoard);
 		jumping = false;
+		incrementStep = 0;
 		this.input = input;
+		URL playerImage = this.getClass().getResource("/images/player.png");
+		DrawableImage drawableImage = new DrawableImage(playerImage, canvas);
+		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
 	}
 	
 	@Override
@@ -72,14 +83,21 @@ public class Player extends GameMovable implements GameEntity{
 		} else if(this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
+		
+		if (speedVector.getDirection().x != 0) {
+			++incrementStep;
+			if (incrementStep >= 10) {
+				sprite.increment();
+				incrementStep = 0;
+			}
+		} else {
+			sprite.setIncrement(0);
+		}
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(new Color(50, 200, 40));
-		g.fillRect(this.getPosition().x, this.getPosition().y,
-				(int) getBoundingBox().getWidth(), (int) getBoundingBox().getHeight());
-		
+		sprite.draw(g, position);
 	}
 
 }

@@ -22,8 +22,8 @@ import gameframework.motion.SpeedVector;
  * then start the main loop
  */
 public class Nidhogg extends GameLevelDefaultImpl {
-	public static int WIDTH = 640;
-	public static int HEIGHT = 480;
+	public static int WIDTH = 800;
+	public static int HEIGHT = 600;
 	public static int SPRITE_SIZE = 16;
 	public static int FPS = 60;
 	
@@ -42,7 +42,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard = new GameUniverseViewPortDefaultImpl();
 		this.gameBoard.setGameData(data);
 		
-		universe.addGameEntity(new Player(strategyKeyBoard, input));
+		universe.addGameEntity(new Player(strategyKeyBoard, input, data.getCanvas()));
 	}
 	
 	
