@@ -39,6 +39,7 @@ public class Player extends GameMovable implements GameEntity{
 	private int jumpKey;
 	private int duckKey;
 	private int throwKey;
+	private boolean headingLeft;
 	
 	public Player(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
 		super(new GameMovableDriverDefaultImpl());
@@ -50,7 +51,9 @@ public class Player extends GameMovable implements GameEntity{
 		URL playerImage = this.getClass().getResource("/images/player.png");
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
-		
+		sprite.setTypes("headingLeft", "headingRight");
+		sprite.setType("headingLeft");
+		headingLeft = true;
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 	}
 	
@@ -96,7 +99,6 @@ public class Player extends GameMovable implements GameEntity{
 		}
 		
 		// When the player goes out of bounds
-		// TODO : Nicolas, regarde ça pour éviter les if ! <3<3<3
 		if(this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 			
@@ -104,6 +106,19 @@ public class Player extends GameMovable implements GameEntity{
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
 		
+		updateDirection();
+		updateAnimation();
+	}
+	
+	protected void updateDirection() {
+		if (speedVector.getDirection().x != 0) {
+			headingLeft = speedVector.getDirection().x < 0;
+			
+			sprite.setType(headingLeft ? "headingLeft" : "headingRight");
+		}
+	}
+	
+	protected void updateAnimation() {
 		if (speedVector.getDirection().x != 0) {
 			++incrementStep;
 			if (incrementStep >= 10) {
