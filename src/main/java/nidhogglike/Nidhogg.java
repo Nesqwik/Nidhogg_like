@@ -8,6 +8,7 @@ import gameframework.gui.GameWindow;
 import java.awt.event.KeyEvent;
 
 import nidhogglike.entities.Player;
+import nidhogglike.entities.Sword;
 import nidhogglike.input.Input;
 /**
  * @author Team 2
@@ -18,8 +19,8 @@ import nidhogglike.input.Input;
  * then start the main loop
  */
 public class Nidhogg extends GameLevelDefaultImpl {
-	public static int WIDTH = 800;
-	public static int HEIGHT = 600;
+	public static int WIDTH = 640;
+	public static int HEIGHT = 480;
 	public static int SPRITE_SIZE = 16;
 	public static int FPS = 60;
 	
@@ -36,8 +37,18 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
-		universe.addGameEntity(new Player(KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data));
-		universe.addGameEntity(new Player(KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data));
+		Player j1 = new Player(KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data);
+		Player j2 = new Player(KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data);
+		Sword j1sword = new Sword(data);
+		Sword j2sword = new Sword(data);
+		
+		j1.setSword(j1sword);
+		j2.setSword(j2sword);
+		
+		universe.addGameEntity(j1);
+		universe.addGameEntity(j2);
+		universe.addGameEntity(j1sword);
+		universe.addGameEntity(j2sword);
 	}
 	
 	

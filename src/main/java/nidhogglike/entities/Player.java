@@ -24,13 +24,13 @@ import nidhogglike.input.Input;
  * Class representing a player controlled by the keyboard
  */
 public class Player extends GameMovable implements GameEntity{
-	private static final int GROUND_Y = 368;
+	private static final int GROUND_Y = 290;
 	protected float velocity_y;
 	private static float VELOCITY_Y_MAX = 10;
 	private static float GRAVITY = 1f;
 	private static int JUMP_HEIGHT = 10;
 	private boolean jumping;
-	private boolean holdingSword;
+	private Sword sword;
 	private int jumpHeight;
 	private Input input;
 	private SpriteManager sprite;
@@ -44,7 +44,6 @@ public class Player extends GameMovable implements GameEntity{
 	public Player(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
 		super(new GameMovableDriverDefaultImpl());
 		jumping = false;
-		holdingSword = true;
 		incrementStep = 0;
 		this.input = input;
 		this.data = data;
@@ -79,10 +78,10 @@ public class Player extends GameMovable implements GameEntity{
 			velocity_y = -10;
 			jumping = true;
 			++jumpHeight;
-		}else if(input.isPressed(throwKey) && holdingSword){
+		}else if(input.isPressed(throwKey) && isHoldingSword()){
 			// Sword throwing
-			holdingSword = false;
-			data.getUniverse().addGameEntity(new Throwable(this, data, this.getPosition().x, this.getPosition().y, 1));
+			sword.playerThrow();
+			sword = null;
 		}
 		
 		// Apply gravity
@@ -136,11 +135,16 @@ public class Player extends GameMovable implements GameEntity{
 	}
 
 	public boolean isHoldingSword() {
-		return holdingSword;
+		return sword != null;
 	}
 
-	public void setHoldingSword(boolean holdingSword) {
-		this.holdingSword = holdingSword;
+	public void setSword(Sword sword) {
+		sword.setHolder(this);
+		this.sword = sword;
+	}
+
+	public boolean isHeadingLeft() {
+		return headingLeft;
 	}
 	
 }
