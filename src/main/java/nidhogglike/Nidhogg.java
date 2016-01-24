@@ -1,6 +1,5 @@
 package nidhogglike;
 
-import gameframework.drawing.GameUniverseViewPortDefaultImpl;
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
@@ -34,7 +33,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		final MoveStrategyKeyboard strategyKeyBoard = new MoveStrategyKeyboard(false);
 		data.getCanvas().addKeyListener(strategyKeyBoard);
 		final Input input = new Input(data.getCanvas());
-		this.gameBoard = new GameUniverseViewPortDefaultImpl();
+		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
 		universe.addGameEntity(new Player(strategyKeyBoard, input, data));

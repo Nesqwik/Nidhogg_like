@@ -1,7 +1,6 @@
 package nidhogglike.entities;
 
 import gameframework.drawing.DrawableImage;
-import gameframework.drawing.GameCanvas;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
@@ -11,7 +10,6 @@ import gameframework.motion.GameMovableDriver;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyKeyboard;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
