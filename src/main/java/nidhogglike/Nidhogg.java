@@ -4,7 +4,9 @@ import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
-import gameframework.motion.MoveStrategyKeyboard;
+
+import java.awt.event.KeyEvent;
+
 import nidhogglike.entities.Player;
 import nidhogglike.input.Input;
 /**
@@ -30,13 +32,12 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	 */
 	@Override
 	protected void init() {
-		final MoveStrategyKeyboard strategyKeyBoard = new MoveStrategyKeyboard(false);
-		data.getCanvas().addKeyListener(strategyKeyBoard);
 		final Input input = new Input(data.getCanvas());
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
-		universe.addGameEntity(new Player(strategyKeyBoard, input, data));
+		universe.addGameEntity(new Player(KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data));
+		universe.addGameEntity(new Player(KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data));
 	}
 	
 	

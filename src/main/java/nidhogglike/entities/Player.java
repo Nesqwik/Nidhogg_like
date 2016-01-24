@@ -6,13 +6,12 @@ import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovable;
-import gameframework.motion.GameMovableDriver;
 import gameframework.motion.GameMovableDriverDefaultImpl;
-import gameframework.motion.MoveStrategyKeyboard;
+import gameframework.motion.MoveStrategyConfigurableKeyboard;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import nidhogglike.Nidhogg;
@@ -26,7 +25,6 @@ import nidhogglike.input.Input;
  */
 public class Player extends GameMovable implements GameEntity{
 	private static final int GROUND_Y = 368;
-	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	protected float velocity_y;
 	private static float VELOCITY_Y_MAX = 10;
 	private static float GRAVITY = 1f;
@@ -38,11 +36,12 @@ public class Player extends GameMovable implements GameEntity{
 	private SpriteManager sprite;
 	private int incrementStep;
 	private GameData data;
+	private int jumpKey;
+	private int duckKey;
+	private int throwKey;
 	
-	
-	public Player(MoveStrategyKeyboard strategyKeyBoard, Input input, GameData data){
-		super(gameDriver);
-		gameDriver.setStrategy(strategyKeyBoard);
+	public Player(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
+		super(new GameMovableDriverDefaultImpl());
 		jumping = false;
 		holdingSword = true;
 		incrementStep = 0;
@@ -51,8 +50,21 @@ public class Player extends GameMovable implements GameEntity{
 		URL playerImage = this.getClass().getResource("/images/player.png");
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
+		
+		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 	}
 	
+	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
+		MoveStrategyConfigurableKeyboard strategyKeyboard = new MoveStrategyConfigurableKeyboard(false);
+		strategyKeyboard.addKeyDirection(keyLeft, new Point(-1, 0));
+		strategyKeyboard.addKeyDirection(keyRight, new Point(1, 0));
+		data.getCanvas().addKeyListener(strategyKeyboard);
+		moveDriver.setStrategy(strategyKeyboard);
+		this.jumpKey = keyUp;
+		this.duckKey = keyDown;
+		this.throwKey = throwKey;
+	}
+
 	@Override
 	public Rectangle getBoundingBox() {
 		return new Rectangle(50, 50);
@@ -60,11 +72,11 @@ public class Player extends GameMovable implements GameEntity{
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
-		if (input.isPressed(KeyEvent.VK_SPACE) && jumpHeight < JUMP_HEIGHT) {
+		if (input.isPressed(jumpKey) && jumpHeight < JUMP_HEIGHT) {
 			velocity_y = -10;
 			jumping = true;
 			++jumpHeight;
-		}else if(input.isPressed(KeyEvent.VK_SHIFT) && holdingSword){
+		}else if(input.isPressed(throwKey) && holdingSword){
 			// Sword throwing
 			holdingSword = false;
 			data.getUniverse().addGameEntity(new Throwable(this, data, this.getPosition().x, this.getPosition().y, 1));
