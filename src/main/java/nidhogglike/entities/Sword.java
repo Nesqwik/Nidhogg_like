@@ -17,12 +17,16 @@ import nidhogglike.Nidhogg;
 public class Sword extends GameMovable implements GameEntity{
 	private Player holder;
 	private SpriteManager sprite;
-	private static float GRAVITY = 0.2f;
+	private static float GRAVITY = 1f;
 	private static float VELOCITY_Y_MAX = 5;
 	private static final int GROUND_Y = 340;
-	private static float velocity_x = 10;
+	private static float SPEED_X = 15;
+	private static int GRAVITY_DELAY = 20;  // Used to add delay before applying gravity when the sword is thrown
+	
+	private float velocity_x;
 	private float velocity_y;
 	private boolean isHeadingLeft;
+	private int gravityDelay;
 	
 	public Sword(GameData data){
 		super(new GameMovableDriverDefaultImpl());
@@ -62,20 +66,14 @@ public class Sword extends GameMovable implements GameEntity{
 	@Override
 	public void oneStepMoveAddedBehavior() {
 		if (!isHeld()) {
-			this.getPosition().x += velocity_x;
-			// Apply gravity
-			velocity_y += GRAVITY;
-			velocity_y = Math.min(velocity_y, VELOCITY_Y_MAX);
-			this.getPosition().y += velocity_y;
+			this.getPosition().x += velocity_x * (isHeadingLeft ? -1 : 1);
+			gravityDelay -= 1;
 			
-			// Collision with the ground
-			if (this.getPosition().y > GROUND_Y) {
-				this.getPosition().y = GROUND_Y;
-				velocity_y = 0;
-				velocity_x = 0;
+			if (gravityDelay <= 0) {
+				applyGravity();
 			}
 			
-			// When the player goes out of bounds
+			// When the sword goes out of bounds
 			if(this.getPosition().x > Nidhogg.WIDTH) {
 				this.getPosition().x = -this.getBoundingBox().width;
 				
@@ -88,8 +86,24 @@ public class Sword extends GameMovable implements GameEntity{
 			sprite.setType(isHeadingLeft ? "left" : "right");
 		}
 	}
+	
+	public void applyGravity() {
+		// Apply gravity
+		velocity_y += GRAVITY;
+		velocity_y = Math.min(velocity_y, VELOCITY_Y_MAX);
+		this.getPosition().y += velocity_y;
+		
+		// Collision with the ground
+		if (this.getPosition().y > GROUND_Y) {
+			this.getPosition().y = GROUND_Y;
+			velocity_y = 0;
+			velocity_x = 0;
+		}
+	}
 
 	public void playerThrow() {
+		velocity_x = SPEED_X;
+		gravityDelay = GRAVITY_DELAY;
 		this.holder = null;
 	}
 
