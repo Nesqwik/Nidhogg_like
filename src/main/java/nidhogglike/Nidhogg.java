@@ -1,24 +1,16 @@
 package nidhogglike;
 
-import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import nidhogglike.entities.Player;
+import nidhogglike.entities.Wall;
+import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.input.Input;
 import gameframework.drawing.GameUniverseViewPortDefaultImpl;
-import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
-import gameframework.motion.GameMovable;
-import gameframework.motion.IllegalMoveException;
 import gameframework.motion.MoveStrategyKeyboard;
-import gameframework.motion.MoveStrategyKeyboard8Dir;
-import gameframework.motion.SpeedVector;
-import gameframework.motion.blocking.MoveBlocker;
-import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
-import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImplTest;
 /**
  * @author Team 2
  * 

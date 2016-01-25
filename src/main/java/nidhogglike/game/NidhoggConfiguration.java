@@ -1,6 +1,8 @@
-package nidhogglike;
+package nidhogglike.game;
 
+import nidhogglike.motion.NidhoggBlockerRulesApplier;
 import gameframework.game.GameConfiguration;
+import gameframework.game.GameUniverse;
 import gameframework.motion.blocking.MoveBlockerRulesApplier;
 
 public class NidhoggConfiguration extends GameConfiguration {
@@ -11,6 +13,10 @@ public class NidhoggConfiguration extends GameConfiguration {
 
 	@Override
 	public MoveBlockerRulesApplier createMoveBlockerRulesApplier() {
-		return new BlockerRulesApplier();
+		return new NidhoggBlockerRulesApplier();
+	}
+	
+	public GameUniverse createUniverse() {
+		return new NidhoggUniverse();
 	}
 }

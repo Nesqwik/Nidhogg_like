@@ -5,13 +5,11 @@ import gameframework.drawing.GameCanvas;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameEntity;
-import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriver;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -19,6 +17,7 @@ import java.net.URL;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.input.Input;
+import nidhogglike.motion.NidhoggMovable;
 
 
 /**
@@ -26,7 +25,7 @@ import nidhogglike.input.Input;
  *
  * Class representing a player controlled by the keyboard
  */
-public class Player extends GameMovable implements GameEntity{
+public class Player extends NidhoggMovable implements GameEntity{
 	private static final int GROUND_Y = 368;
 	static GameMovableDriver gameDriver = new GameMovableDriverDefaultImpl();
 	protected float velocity_y;
