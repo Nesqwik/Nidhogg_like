@@ -9,7 +9,6 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 	public void overlapRule(Sword sword, Player player) {
 		// This is not an error, we want to check that the sword is colliding with another player
 		if (sword.getHolder() != player) {
-			System.out.println("rgdfgdfgdfg");
 			if(sword.isMoving() || sword.getHolder() != null) {
 				player.die();
 			} else if(!player.isHoldingSword()) {
