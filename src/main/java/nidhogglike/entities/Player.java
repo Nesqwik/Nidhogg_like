@@ -8,6 +8,7 @@ import gameframework.game.GameEntity;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
+import gameframework.motion.overlapping.Overlappable;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -24,7 +25,7 @@ import nidhogglike.motion.NidhoggMovable;
  *
  * Class representing a player controlled by the keyboard
  */
-public class Player extends NidhoggMovable implements GameEntity{
+public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private static final int GROUND_Y = 290;
 	protected float velocity_y;
 	private static float VELOCITY_Y_MAX = 10;
@@ -152,5 +153,10 @@ public class Player extends NidhoggMovable implements GameEntity{
 	public void onMoveFailure(MoveBlocker lastBlockingBlocker) {
 		velocity_y = 0;
 		this.getPosition().y += 20;
+	}
+
+	public void die() {
+		//TODO : do something useful
+		System.out.println("I'm dead");
 	}
 }

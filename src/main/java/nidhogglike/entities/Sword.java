@@ -6,6 +6,7 @@ import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovableDriverDefaultImpl;
+import gameframework.motion.overlapping.Overlappable;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -14,7 +15,7 @@ import java.net.URL;
 import nidhogglike.Nidhogg;
 import nidhogglike.motion.NidhoggMovable;
 
-public class Sword extends NidhoggMovable implements GameEntity{
+public class Sword extends NidhoggMovable implements GameEntity, Overlappable{
 	private Player holder;
 	private SpriteManager sprite;
 	private static float GRAVITY = 1f;
@@ -109,5 +110,9 @@ public class Sword extends NidhoggMovable implements GameEntity{
 
 	public void setHolder(Player player) {
 		this.holder = player;
+	}
+	
+	public Player getHolder() {
+		return holder;
 	}
 }
