@@ -5,6 +5,7 @@ import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 import nidhogglike.entities.Ground;
@@ -44,8 +45,8 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
-		Player j1 = new Player(PLAYER1_DATA_KEY, KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data);
-		Player j2 = new Player(PLAYER2_DATA_KEY, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data);
+		Player j1 = new Player(PLAYER1_DATA_KEY, new Point(0, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data);
+		Player j2 = new Player(PLAYER2_DATA_KEY, new Point(500, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data);
 		Sword j1sword = new Sword(data);
 		Sword j2sword = new Sword(data);
 		

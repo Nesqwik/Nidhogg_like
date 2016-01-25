@@ -43,8 +43,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int throwKey;
 	private boolean headingLeft;
 	private String observableDataKey;
+	private Point respawnPosition;
 
-	public Player(String observableDataKey, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
+	public Player(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
 		super(new GameMovableDriverDefaultImpl());
 		jumping = false;
 		incrementStep = 0;
@@ -58,8 +59,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		headingLeft = true;
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 		this.observableDataKey = observableDataKey;
+		this.respawnPosition = respawnPosition;
 	}
-
+	
 	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
 		MoveStrategyConfigurableKeyboard strategyKeyboard = new MoveStrategyConfigurableKeyboard(false);
 		strategyKeyboard.addKeyDirection(keyLeft, new Point(-1, 0));
@@ -73,7 +75,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(50, 50);
+		return new Rectangle(isHeadingLeft() ? 50 : 40, 50);
 	}
 
 	@Override
@@ -157,6 +159,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void die() {
 		((NidhoggGameData)data).incrementObservableValue(observableDataKey, 1);
+		// Respawn
+		this.getPosition().x = respawnPosition.x;
+		this.getPosition().y = respawnPosition.y;
 	}
 
 	public void refinePositionAfterLateralCollision(Platform platform) {

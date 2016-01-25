@@ -21,7 +21,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private static float GRAVITY = 1f;
 	private static float VELOCITY_Y_MAX = 5;
 	private static final int GROUND_Y = 340;
-	private static float SPEED_X = 15;
+	private static float SPEED_X = 18;
 	private static int GRAVITY_DELAY = 20;  // Used to add delay before applying gravity when the sword is thrown
 	
 	private float velocity_x;
@@ -53,7 +53,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 			if (isHeadingLeft) {
 				position.x -= holder.getBoundingBox().width - 6;
 			} else {
-				position.x += holder.getBoundingBox().width - 19;
+				position.x += holder.getBoundingBox().width - 8;
 			}
 			position.y = holder.getPosition().y + 11;
 		}
@@ -108,7 +108,6 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 	
 	public boolean isMoving() {
-		System.out.println(isMoving);
 		return this.isMoving;
 	}
 

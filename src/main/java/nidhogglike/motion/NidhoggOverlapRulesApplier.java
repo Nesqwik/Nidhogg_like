@@ -7,10 +7,10 @@ import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 
 	public void overlapRule(Sword sword, Player player) {
-		System.out.println("toto");
-		// This is not an error, we intend to verify if the holder of the sword if the same instance that the player
+		// This is not an error, we want to check that the sword is colliding with another player
 		if (sword.getHolder() != player) {
-			if(sword.isMoving()) {
+			System.out.println("rgdfgdfgdfg");
+			if(sword.isMoving() || sword.getHolder() != null) {
 				player.die();
 			} else if(!player.isHoldingSword()) {
 				player.setSword(sword);
