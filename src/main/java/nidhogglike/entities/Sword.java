@@ -105,6 +105,10 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	
 	public void setMoving(boolean isMoving) {
 		this.isMoving = isMoving;
+		if (!isMoving) {
+			velocity_x = 0;
+			gravityDelay = 0;
+		}
 	}
 	
 	public boolean isMoving() {
