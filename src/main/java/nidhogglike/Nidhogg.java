@@ -6,9 +6,10 @@ import gameframework.gui.GameWindow;
 
 import java.awt.event.KeyEvent;
 
+import nidhogglike.entities.Ground;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
-import nidhogglike.entities.Wall;
+import nidhogglike.entities.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.input.Input;
 
@@ -51,6 +52,14 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		universe.addGameEntity(j2);
 		universe.addGameEntity(j1sword);
 		universe.addGameEntity(j2sword);
+		universe.addGameEntity(new Ground());
+		universe.addGameEntity(new Platform(200, 250, 100, 10));
+		universe.addGameEntity(new Platform(400, 250, 100, 10));
+		universe.addGameEntity(new Platform(500, 320, 100, 50));
+		
+		universe.addGameEntity(new Platform(350, 150, 100, 10));
+
+
 	}
 	
 	/**

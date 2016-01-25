@@ -11,27 +11,28 @@ import gameframework.motion.blocking.MoveBlocker;
  * @author Team 2
  * Class to test collisions before having something more useful
  */
-public class Wall implements MoveBlocker, GameEntity {
+public class Platform implements MoveBlocker, GameEntity {
 
-	public Wall() {
-		// TODO Auto-generated constructor stub
+	protected Rectangle boundingBox;
+	
+	public Platform(int x, int y, int width, int height) {
+		boundingBox = new Rectangle(x, y, width, height);
 	}
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(350, 150, 100, 100);
+		return boundingBox;
 	}
 
 	@Override
 	public boolean isMovable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(new Color(150,150,150));
-		g.fillRect(350, 150, 100, 100);
+		g.fillRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
 	}
 
 }

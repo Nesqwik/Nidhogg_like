@@ -8,23 +8,43 @@ import gameframework.motion.GameMovable;
 import gameframework.motion.IllegalMoveException;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
+import nidhogglike.entities.Ground;
 import nidhogglike.entities.Player;
-import nidhogglike.entities.Wall;
+import nidhogglike.entities.Platform;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
 	/**
 	 * The last moveBlocker in date to provoke a blocking rule that forbid a movement 
 	 */
 	protected MoveBlocker lastBlockingBlocker = null;
-	
+
 	public NidhoggBlockerRulesApplier() {
 		super();
 	}
 
-	public void moveBlockerRule(Player p, Wall blocker)
+	public void moveBlockerRule(Player p, Platform platform)
 			throws IllegalMoveException {
-		throw new IllegalMoveException();
+		// This rule was done this way to avoid slowdowns provoked by the java exception system.
+		final int feetY = p.getPosition().y + p.getBoundingBox().height;
+		final int delta = platform.getBoundingBox().y - feetY;
+
+		// if the player is standing on the obstacle
+		if (Math.abs(delta) < 20) {
+			p.groundCollision(platform);
+		} else if (p.getVelocityY() < 0) {
+			p.roofCollision(platform);
+			throw new IllegalMoveException();
+		} else {
+			p.refinePositionAfterLateralCollision(platform);
+			throw new IllegalMoveException();
+		}
 	}
+	
+	public void moveBlockerRule(Player p, Ground ground)
+			throws IllegalMoveException {
+		p.groundCollision(ground);
+	}
+
 
 	@Override
 	public boolean moveValidationProcessing(GameMovable movable,
@@ -47,7 +67,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 		}
 		return true;
 	}
-	
+
 	protected void moveBlockerRuleApply(GameMovable movable, MoveBlocker blocker)
 			throws Exception {
 		Method m = null;
@@ -55,7 +75,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 				blocker.getClass());
 		m.invoke(this, movable, blocker);
 	}
-	
+
 	public MoveBlocker getLastBlockingBlocker() {
 		return lastBlockingBlocker;
 	}
