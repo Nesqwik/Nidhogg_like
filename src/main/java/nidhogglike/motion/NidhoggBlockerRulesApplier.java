@@ -10,6 +10,7 @@ import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
 import nidhogglike.entities.Ground;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.Sword;
 import nidhogglike.entities.Platform;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
@@ -43,6 +44,16 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(Player p, Ground ground)
 			throws IllegalMoveException {
 		p.groundCollision(ground);
+	}
+	
+	public void moveBlockerRule(Sword s, Ground ground)
+			throws IllegalMoveException {
+		s.setMoving(false);
+	}
+	
+	public void moveBlockerRule(Sword s, Platform p)
+			throws IllegalMoveException {
+		s.setMoving(false);
 	}
 
 

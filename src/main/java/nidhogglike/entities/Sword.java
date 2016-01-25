@@ -15,7 +15,7 @@ import java.net.URL;
 import nidhogglike.Nidhogg;
 import nidhogglike.motion.NidhoggMovable;
 
-public class Sword extends NidhoggMovable implements GameEntity, Overlappable{
+public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private Player holder;
 	private SpriteManager sprite;
 	private static float GRAVITY = 1f;
@@ -28,6 +28,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable{
 	private float velocity_y;
 	private boolean isHeadingLeft;
 	private int gravityDelay;
+	private boolean isMoving = false;
 	
 	public Sword(GameData data){
 		super(new GameMovableDriverDefaultImpl());
@@ -101,15 +102,26 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable{
 			velocity_x = 0;
 		}
 	}
+	
+	public void setMoving(boolean isMoving) {
+		this.isMoving = isMoving;
+	}
+	
+	public boolean isMoving() {
+		System.out.println(isMoving);
+		return this.isMoving;
+	}
 
 	public void playerThrow() {
 		velocity_x = SPEED_X;
 		gravityDelay = GRAVITY_DELAY;
 		this.holder = null;
+		setMoving(true);
 	}
 
 	public void setHolder(Player player) {
 		this.holder = player;
+		setMoving(true);
 	}
 	
 	public Player getHolder() {

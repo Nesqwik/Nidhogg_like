@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 import java.net.URL;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
 import nidhogglike.motion.NidhoggMovable;
 
@@ -41,8 +42,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int duckKey;
 	private int throwKey;
 	private boolean headingLeft;
+	private String observableDataKey;
 
-	public Player(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
+	public Player(String observableDataKey, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
 		super(new GameMovableDriverDefaultImpl());
 		jumping = false;
 		incrementStep = 0;
@@ -55,6 +57,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		sprite.setType("headingLeft");
 		headingLeft = true;
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
+		this.observableDataKey = observableDataKey;
 	}
 
 	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
@@ -153,8 +156,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	public void die() {
-		//TODO : do something useful
-		System.out.println("I'm dead");
+		((NidhoggGameData)data).incrementObservableValue(observableDataKey, 1);
 	}
 
 	public void refinePositionAfterLateralCollision(Platform platform) {
