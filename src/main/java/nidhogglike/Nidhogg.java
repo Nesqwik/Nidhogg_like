@@ -1,6 +1,5 @@
 package nidhogglike;
 
-import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameWindow;
@@ -9,7 +8,10 @@ import java.awt.event.KeyEvent;
 
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
+import nidhogglike.entities.Wall;
+import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.input.Input;
+
 /**
  * @author Team 2
  * 
@@ -51,14 +53,13 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		universe.addGameEntity(j2sword);
 	}
 	
-	
 	/**
 	 * First method called
 	 * 
 	 * @param args Command line parameters
 	 */
 	public static void main(String[] args) {
-		GameConfiguration configuration = new GameConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
+		NidhoggConfiguration configuration = new NidhoggConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
 		final GameData gameData = new GameData(configuration);
 		GameWindow gameWindow = new GameWindow("Nidhogg", gameData.getCanvas(), gameData);
 		

@@ -5,7 +5,6 @@ import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
 import gameframework.game.GameEntity;
-import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 
 import java.awt.Graphics;
@@ -13,8 +12,9 @@ import java.awt.Rectangle;
 import java.net.URL;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.motion.NidhoggMovable;
 
-public class Sword extends GameMovable implements GameEntity{
+public class Sword extends NidhoggMovable implements GameEntity{
 	private Player holder;
 	private SpriteManager sprite;
 	private static float GRAVITY = 1f;

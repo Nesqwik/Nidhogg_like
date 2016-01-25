@@ -5,9 +5,9 @@ import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
 import gameframework.game.GameEntity;
-import gameframework.motion.GameMovable;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
+import gameframework.motion.blocking.MoveBlocker;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -16,6 +16,7 @@ import java.net.URL;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.input.Input;
+import nidhogglike.motion.NidhoggMovable;
 
 
 /**
@@ -23,7 +24,7 @@ import nidhogglike.input.Input;
  *
  * Class representing a player controlled by the keyboard
  */
-public class Player extends GameMovable implements GameEntity{
+public class Player extends NidhoggMovable implements GameEntity{
 	private static final int GROUND_Y = 290;
 	protected float velocity_y;
 	private static float VELOCITY_Y_MAX = 10;
@@ -147,4 +148,9 @@ public class Player extends GameMovable implements GameEntity{
 		return headingLeft;
 	}
 	
+	@Override
+	public void onMoveFailure(MoveBlocker lastBlockingBlocker) {
+		velocity_y = 0;
+		this.getPosition().y += 20;
+	}
 }
