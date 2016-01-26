@@ -45,7 +45,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private boolean headingLeft;
 	private String observableDataKey;
 	private Point respawnPosition;
-	
+
 	public Player(NidhoggGameData data, Input input, boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
 
@@ -59,7 +59,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 					KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
 	}
-	
+
 	protected void initPlayer(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, 
 			Input input, NidhoggGameData data, String spritePath) {
 		jumping = false;
@@ -76,7 +76,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		this.observableDataKey = observableDataKey;
 		this.respawnPosition = respawnPosition;
 	}
-	
+
 	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
 		MoveStrategyConfigurableKeyboard strategyKeyboard = new MoveStrategyConfigurableKeyboard(false);
 		strategyKeyboard.addKeyDirection(keyLeft, new Point(-1, 0));
@@ -177,10 +177,13 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		// Respawn
 		this.getPosition().x = respawnPosition.x;
 		this.getPosition().y = respawnPosition.y;
-		
-		Sword sword = ((NidhoggUniverse) data.getUniverse()).getFreeSword();
-		if (sword != null)
-			setSword(sword);
+
+		if (sword == null) {
+			Sword sword = ((NidhoggUniverse) data.getUniverse()).getFreeSword();
+			if (sword != null) {
+				setSword(sword);
+			}
+		}
 	}
 
 	public void refinePositionAfterLateralCollision(Platform platform) {
@@ -198,7 +201,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		jumpHeight = JUMP_HEIGHT;
 		this.getPosition().y += 5;
 	}
-	
+
 	public float getVelocityY() {
 		return velocity_y;
 	}
