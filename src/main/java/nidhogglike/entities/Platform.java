@@ -15,8 +15,8 @@ public class Platform implements MoveBlocker, GameEntity {
 
 	protected Rectangle boundingBox;
 	
-	public Platform(int x, int y, int width, int height) {
-		boundingBox = new Rectangle(x, y, width, height);
+	public Platform(float x, float y, float width, float height) {
+		boundingBox = new Rectangle((int) x, (int) y, (int) width, (int) height);
 	}
 
 	@Override

@@ -6,9 +6,8 @@ import nidhogglike.Nidhogg;
 
 public class Ground extends Platform {
 
-	protected final static int HEIGHT = 138;
 	public Ground() {
-		super(0, Nidhogg.HEIGHT - HEIGHT, Nidhogg.WIDTH, HEIGHT);
+		super(0 - (Nidhogg.WIDTH / 2), Nidhogg.HEIGHT - Nidhogg.HEIGHT * 0.3f, Nidhogg.WIDTH * 2, Nidhogg.HEIGHT - Nidhogg.HEIGHT * 0.3f);
 	}
 	
 	@Override
