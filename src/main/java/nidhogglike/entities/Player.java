@@ -17,6 +17,7 @@ import java.net.URL;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
+import nidhogglike.game.NidhoggUniverse;
 import nidhogglike.input.Input;
 import nidhogglike.motion.NidhoggMovable;
 
@@ -176,6 +177,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		// Respawn
 		this.getPosition().x = respawnPosition.x;
 		this.getPosition().y = respawnPosition.y;
+		
+		Sword sword = ((NidhoggUniverse) data.getUniverse()).getFreeSword();
+		if (sword != null)
+			setSword(sword);
 	}
 
 	public void refinePositionAfterLateralCollision(Platform platform) {

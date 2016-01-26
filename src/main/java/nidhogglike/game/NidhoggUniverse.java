@@ -1,13 +1,28 @@
 package nidhogglike.game;
 
+import nidhogglike.entities.Sword;
 import nidhogglike.motion.NidhoggBlockerRulesApplier;
 import nidhogglike.motion.NidhoggMovable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gameframework.game.GameEntity;
 import gameframework.game.GameUniverseDefaultImpl;
 import gameframework.motion.GameMovable;
 import gameframework.motion.SpeedVector;
 
 public class NidhoggUniverse extends GameUniverseDefaultImpl {
+	
+	protected List<Sword> swords = new ArrayList<>();
+	
+	@Override
+	public synchronized void addGameEntity(GameEntity gameEntity) {
+		if (gameEntity instanceof Sword) {
+			swords.add((Sword) gameEntity);
+		}
+		super.addGameEntity(gameEntity);
+	}
 	
 	@Override
 	public void allOneStepMoves() {
@@ -24,5 +39,15 @@ public class NidhoggUniverse extends GameUniverseDefaultImpl {
 			}
 		}
 	}
+	
+	public Sword getFreeSword() {
+		for (Sword s : swords) {
+			if (!s.isHeld()) {
+				return s;
+			}
+		}
+		return null;
+	}
+
 
 }

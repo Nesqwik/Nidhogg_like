@@ -30,6 +30,8 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private int gravityDelay;
 	private boolean isMoving = true;
 	
+	private Player lastHolder = null;
+	
 	public Sword(GameData data, boolean isHeadingLeft){
 		super(new GameMovableDriverDefaultImpl());
 		URL playerImage = this.getClass().getResource("/images/sword.png");
@@ -61,7 +63,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 		
 	}
 
-	private boolean isHeld() {
+	public boolean isHeld() {
 		return holder != null;
 	}
 
@@ -89,6 +91,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 	
+
 	public void applyGravity() {
 		// Apply gravity
 		velocity_y += GRAVITY;
@@ -125,9 +128,13 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void setHolder(Player player) {
 		this.holder = player;
+		lastHolder = player;
 		setMoving(true);
 	}
 	
+	public Player getLastHolder() {
+		return lastHolder;
+	}
 	public Player getHolder() {
 		return holder;
 	}
