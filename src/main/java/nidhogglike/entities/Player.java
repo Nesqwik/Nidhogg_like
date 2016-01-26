@@ -3,7 +3,6 @@ package nidhogglike.entities;
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
-import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
@@ -50,13 +49,13 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		super(new GameMovableDriverDefaultImpl());
 
 		if (isPlayer1) {
-			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(0, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A,
-					input, data, "/images/player1.png");
+			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
+					KeyEvent.VK_D, KeyEvent.VK_A, input, data, "/images/player1.png");
 			headingLeft = false;
 			sprite.setType("headingRight");
 		} else {
-			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(500, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, 
-					KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
+			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(Nidhogg.WIDTH - 125, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
+					KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
 	}
 	
