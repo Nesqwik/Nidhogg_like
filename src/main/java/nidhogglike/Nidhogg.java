@@ -6,7 +6,6 @@ import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
-
 import nidhogglike.entities.Ground;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
@@ -14,6 +13,12 @@ import nidhogglike.entities.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
+import nidhogglike.particles.ParticleEmitter;
+import nidhogglike.particles.behaviors.DelayedParticle;
+import nidhogglike.particles.behaviors.DyingParticle;
+import nidhogglike.particles.behaviors.GravityParticle;
+import nidhogglike.particles.behaviors.MovingParticle;
+import nidhogglike.particles.behaviors.ParticleBehavior;
 
 /**
  * @author Team 2
@@ -51,9 +56,12 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		final Input input = new Input(data.getCanvas());
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
-
+		ParticleEmitter emitter = new ParticleEmitter();
+		
 		Player j1 = new Player((NidhoggGameData) data, input, true);
 		Player j2 = new Player((NidhoggGameData) data, input, false);
+		j1.setParticleEmitter(emitter);
+		j2.setParticleEmitter(emitter);
 		Sword j1sword = new Sword(data, false);
 		Sword j2sword = new Sword(data, true);
 
@@ -71,6 +79,9 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		} else {
 			addSmallPlatforms();
 		}
+		
+		
+		universe.addGameEntity(emitter);
 	}
 
 	private void addSmallPlatforms() {
