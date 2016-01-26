@@ -13,6 +13,7 @@ import gameframework.motion.overlapping.Overlappable;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import nidhogglike.Nidhogg;
@@ -44,14 +45,43 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private boolean headingLeft;
 	private String observableDataKey;
 	private Point respawnPosition;
-
-	public Player(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
+	
+	public Player(GameData data, boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
+
+		if (isPlayer1) {
+			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(0, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A,
+					new Input(data.getCanvas()), data, "/images/player1.png");
+		} else {
+			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(500, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, 
+					KeyEvent.VK_SHIFT, new Input(data.getCanvas()), data, "/images/player2.png");
+		}
+	}
+
+//	public Player(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
+//		super(new GameMovableDriverDefaultImpl());
+//		jumping = false;
+//		incrementStep = 0;
+//		this.input = input;
+//		this.data = data;
+//		URL playerImage = this.getClass().getResource("/images/player.png");
+//		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
+//		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
+//		sprite.setTypes("headingLeft", "headingRight");
+//		sprite.setType("headingLeft");
+//		headingLeft = true;
+//		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
+//		this.observableDataKey = observableDataKey;
+//		this.respawnPosition = respawnPosition;
+//	}
+	
+	protected void initPlayer(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, 
+			Input input, GameData data, String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
 		this.data = data;
-		URL playerImage = this.getClass().getResource("/images/player.png");
+		URL playerImage = this.getClass().getResource(spritePath);
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
 		sprite.setTypes("headingLeft", "headingRight");

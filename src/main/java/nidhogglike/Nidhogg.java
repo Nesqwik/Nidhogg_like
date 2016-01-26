@@ -25,8 +25,8 @@ import nidhogglike.input.Input;
  * then start the main loop
  */
 public class Nidhogg extends GameLevelDefaultImpl {
-	private static final String PLAYER2_DATA_KEY = "player2";
-	private static final String PLAYER1_DATA_KEY = "player1";
+	public static final String PLAYER2_DATA_KEY = "player2";
+	public static final String PLAYER1_DATA_KEY = "player1";
 	public static int WIDTH = 640;
 	public static int HEIGHT = 480;
 	public static int SPRITE_SIZE = 16;
@@ -45,8 +45,8 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
-		Player j1 = new Player(PLAYER1_DATA_KEY, new Point(0, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, input, data);
-		Player j2 = new Player(PLAYER2_DATA_KEY, new Point(500, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data);
+		Player j1 = new Player(data, true);
+		Player j2 = new Player(data, false);
 		Sword j1sword = new Sword(data);
 		Sword j2sword = new Sword(data);
 		
