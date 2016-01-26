@@ -38,7 +38,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private Input input;
 	private SpriteManager sprite;
 	private int incrementStep;
-	private GameData data;
+	private NidhoggGameData data;
 	private int jumpKey;
 	private int duckKey;
 	private int throwKey;
@@ -46,37 +46,22 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private String observableDataKey;
 	private Point respawnPosition;
 	
-	public Player(GameData data, boolean isPlayer1) {
+	public Player(NidhoggGameData data, Input input, boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
 
 		if (isPlayer1) {
 			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(0, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A,
-					new Input(data.getCanvas()), data, "/images/player1.png");
+					input, data, "/images/player1.png");
+			headingLeft = false;
+			sprite.setType("headingRight");
 		} else {
 			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(500, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, 
-					KeyEvent.VK_SHIFT, new Input(data.getCanvas()), data, "/images/player2.png");
+					KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
 	}
-
-//	public Player(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, Input input, GameData data) {
-//		super(new GameMovableDriverDefaultImpl());
-//		jumping = false;
-//		incrementStep = 0;
-//		this.input = input;
-//		this.data = data;
-//		URL playerImage = this.getClass().getResource("/images/player.png");
-//		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
-//		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
-//		sprite.setTypes("headingLeft", "headingRight");
-//		sprite.setType("headingLeft");
-//		headingLeft = true;
-//		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
-//		this.observableDataKey = observableDataKey;
-//		this.respawnPosition = respawnPosition;
-//	}
 	
 	protected void initPlayer(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, 
-			Input input, GameData data, String spritePath) {
+			Input input, NidhoggGameData data, String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
@@ -188,7 +173,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	public void die() {
-		((NidhoggGameData)data).incrementObservableValue(observableDataKey, 1);
+		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
 		this.getPosition().x = respawnPosition.x;
 		this.getPosition().y = respawnPosition.y;
@@ -202,9 +187,6 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 			getPosition().x -= 1;
 		}
 		applyGravity();
-//		getPosition().x = leftCollision ?
-//				platform.getBoundingBox().x + platform.getBoundingBox().width + 9 
-//				: platform.getBoundingBox().x - this.getBoundingBox().width - 9; 
 	}
 
 	public void roofCollision(Platform platform) {

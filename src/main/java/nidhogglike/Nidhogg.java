@@ -45,10 +45,10 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		this.gameBoard = new NidhoggUniverseViewPort();
 		this.gameBoard.setGameData(data);
 		
-		Player j1 = new Player(data, true);
-		Player j2 = new Player(data, false);
-		Sword j1sword = new Sword(data);
-		Sword j2sword = new Sword(data);
+		Player j1 = new Player((NidhoggGameData) data, input, true);
+		Player j2 = new Player((NidhoggGameData) data, input, false);
+		Sword j1sword = new Sword(data, false);
+		Sword j2sword = new Sword(data, true);
 		
 		j1.setSword(j1sword);
 		j2.setSword(j2sword);

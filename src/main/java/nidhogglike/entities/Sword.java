@@ -28,16 +28,16 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private float velocity_y;
 	private boolean isHeadingLeft;
 	private int gravityDelay;
-	private boolean isMoving = false;
+	private boolean isMoving = true;
 	
-	public Sword(GameData data){
+	public Sword(GameData data, boolean isHeadingLeft){
 		super(new GameMovableDriverDefaultImpl());
 		URL playerImage = this.getClass().getResource("/images/sword.png");
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 1);
 		sprite.setTypes("left", "right");
 		sprite.setType("left");
-		isHeadingLeft = true;
+		this.isHeadingLeft = isHeadingLeft;
 		velocity_y = 0;
 	}
 	
