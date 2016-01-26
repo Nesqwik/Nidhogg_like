@@ -6,6 +6,7 @@ import gameframework.drawing.SpriteManagerDefaultImpl;
 import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovableDriverDefaultImpl;
+import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
 
 import java.awt.Graphics;
@@ -20,7 +21,6 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private SpriteManager sprite;
 	private static float GRAVITY = 1f;
 	private static float VELOCITY_Y_MAX = 5;
-	private static final int GROUND_Y = 340;
 	private static float SPEED_X = 18;
 	private static int GRAVITY_DELAY = 20;  // Used to add delay before applying gravity when the sword is thrown
 	
@@ -94,13 +94,14 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 		velocity_y += GRAVITY;
 		velocity_y = Math.min(velocity_y, VELOCITY_Y_MAX);
 		this.getPosition().y += velocity_y;
-		
+	}
+	
+	public void groundCollision(MoveBlocker platform) {
 		// Collision with the ground
-		if (this.getPosition().y > GROUND_Y) {
-			this.getPosition().y = GROUND_Y;
-			velocity_y = 0;
-			velocity_x = 0;
-		}
+		this.getPosition().y = platform.getBoundingBox().y - this.getBoundingBox().height;
+		velocity_y = 0;
+		velocity_x = 0;
+		setMoving(false);
 	}
 	
 	public void setMoving(boolean isMoving) {

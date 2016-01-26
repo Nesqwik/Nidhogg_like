@@ -49,6 +49,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(Sword s, Ground ground)
 			throws IllegalMoveException {
 		s.setMoving(false);
+		s.groundCollision(ground);
 	}
 	
 	public void moveBlockerRule(Sword s, Platform p)
@@ -60,6 +61,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 		}
 		
 		s.setMoving(false);
+		s.groundCollision(p);
 	}
 
 
