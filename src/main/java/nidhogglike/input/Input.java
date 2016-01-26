@@ -19,7 +19,10 @@ public class Input  extends KeyAdapter {
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
 		super.keyPressed(keyEvent);
-		keys[keyEvent.getKeyCode()] = true;
+		
+		if (keyEvent.getKeyCode() < keys.length) {
+			keys[keyEvent.getKeyCode()] = true;
+		}
 	}
 
 	/**
@@ -28,7 +31,9 @@ public class Input  extends KeyAdapter {
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
 		super.keyReleased(keyEvent);
-		keys[keyEvent.getKeyCode()] = false;
+		if (keyEvent.getKeyCode() < keys.length) {
+			keys[keyEvent.getKeyCode()] = false;
+		}
 	}
 	
 	public boolean isPressed(int keyCode) {
