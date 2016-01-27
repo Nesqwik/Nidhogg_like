@@ -1,6 +1,7 @@
 package nidhogglike.motion;
 
 import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
+import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
 
@@ -34,5 +35,9 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 				s2.getHolder().pushBackwards();
 			}
 		}
+	}
+
+	public void overlapRule(final HeadBalloon baloon, final Player player) {
+		baloon.isShootedBy(player);
 	}
 }
