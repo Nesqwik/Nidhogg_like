@@ -9,6 +9,7 @@ import gameframework.motion.IllegalMoveException;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
 import nidhogglike.entities.Ground;
+import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
 import nidhogglike.entities.Platform;
@@ -39,6 +40,29 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 			p.refinePositionAfterLateralCollision(platform);
 			throw new IllegalMoveException();
 		}
+	}
+	
+	public void moveBlockerRule(HeadBalloon b, Platform platform)
+			throws IllegalMoveException {
+		// This rule was done this way to avoid slowdowns provoked by the java exception system.
+		final int feetY = b.getPosition().y + b.getBoundingBox().height;
+		final int delta = platform.getBoundingBox().y - feetY;
+
+		// if the baloon is colliding on the obstacle
+		if (Math.abs(delta) < 20) {
+			b.platformCollision(platform);
+		} else if (b.getVelocityY() < 0) {
+			b.platformCollision(platform);
+			throw new IllegalMoveException();
+		} else {
+			b.LateralCollision(platform);
+			throw new IllegalMoveException();
+		}
+	}
+	
+	public void moveBlockerRule(HeadBalloon b, Ground ground)
+			throws IllegalMoveException {
+		b.platformCollision(ground);
 	}
 	
 	public void moveBlockerRule(Player p, Ground ground)

@@ -240,6 +240,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width / 2,
 				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
 
+		// Head
+		data.getUniverse().addGameEntity(new HeadBalloon(this.getPosition().x, this.getPosition().y, color));
+
 		data.incrementObservableValue(observableDataKey, 1);
 		announceKills(data.getObservableValue(observableDataKey).getValue());
 		// Respawn
