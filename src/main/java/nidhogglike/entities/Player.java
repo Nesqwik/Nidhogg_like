@@ -56,9 +56,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private ParticleBehavior dyingParticleBehavior;
 	private Color color;
 
-	public Player(NidhoggGameData data, Input input, boolean isPlayer1) {
+	private final boolean isPlayer1;
+	public Player(final NidhoggGameData data, final Input input, final boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
-
+		this.isPlayer1 = isPlayer1;
 		if (isPlayer1) {
 			color = new Color(255, 160, 64);
 			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
@@ -72,14 +73,14 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	protected void initPlayer(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, 
-			Input input, NidhoggGameData data, String spritePath) {
+	protected void initPlayer(final String observableDataKey,final Point respawnPosition, final int keyUp, final int keyLeft, final int keyDown, final int keyRight, final int throwKey,
+			final Input input, final NidhoggGameData data, final String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
 		this.data = data;
-		URL playerImage = this.getClass().getResource(spritePath);
-		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
+		final URL playerImage = this.getClass().getResource(spritePath);
+		final DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
 		sprite.setTypes("headingLeft", "headingRight");
 		sprite.setType("headingLeft");
@@ -87,10 +88,16 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 		this.observableDataKey = observableDataKey;
 		this.respawnPosition = respawnPosition;
+		resetPosition();
 	}
 
-	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
-		MoveStrategyConfigurableKeyboard strategyKeyboard = new MoveStrategyConfigurableKeyboard(false);
+	protected void resetPosition() {
+		this.getPosition().x = respawnPosition.x;
+		this.getPosition().y = respawnPosition.y;
+	}
+
+	protected void setupKeys(final int keyUp, final int keyLeft, final int keyDown, final int keyRight, final int throwKey) {
+		final MoveStrategyConfigurableKeyboard strategyKeyboard = new MoveStrategyConfigurableKeyboard(false);
 		strategyKeyboard.addKeyDirection(keyLeft, new Point(-1, 0));
 		strategyKeyboard.addKeyDirection(keyRight, new Point(1, 0));
 		data.getCanvas().addKeyListener(strategyKeyboard);
@@ -138,7 +145,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		this.getPosition().y += velocity_y;
 	}
 
-	public void groundCollision(MoveBlocker platform) {
+	public void groundCollision(final MoveBlocker platform) {
 		// Collision with the ground
 		this.getPosition().y = platform.getBoundingBox().y - this.getBoundingBox().height;
 		jumping = false;
@@ -165,9 +172,8 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 			sprite.setIncrement(0);
 		}
 	}
-
 	@Override
-	public void draw(Graphics g) {
+	public void draw(final Graphics g) {
 		sprite.draw(g, position);
 	}
 
@@ -175,7 +181,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		return sword != null;
 	}
 
-	public void setSword(Sword sword) {
+	public void setSword(final Sword sword) {
 		sword.setHolder(this);
 		this.sword = sword;
 	}
@@ -187,22 +193,25 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public void die() {
 		// Particles
 		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width/2, this.getPosition().y + this.getBoundingBox().height/2, 20, dyingParticleBehavior);
-		
+
 		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
-		this.getPosition().x = respawnPosition.x;
-		this.getPosition().y = respawnPosition.y;
+		resetPosition();
 
+		recoverSwordIfNeeded();
+	}
+
+	protected void recoverSwordIfNeeded() {
 		if (sword == null) {
-			Sword sword = ((NidhoggUniverse) data.getUniverse()).getFreeSword();
+			final Sword sword = ((NidhoggUniverse) data.getUniverse()).getFreeSword();
 			if (sword != null) {
 				setSword(sword);
 			}
 		}
 	}
 
-	public void refinePositionAfterLateralCollision(Platform platform) {
-		boolean leftCollision = this.getPosition().x > platform.getBoundingBox().x;
+	public void refinePositionAfterLateralCollision(final Platform platform) {
+		final boolean leftCollision = this.getPosition().x > platform.getBoundingBox().x;
 		if (leftCollision) {
 			getPosition().x += 1;
 		} else {
@@ -211,7 +220,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		applyGravity();
 	}
 
-	public void roofCollision(Platform platform) {
+	public void roofCollision(final Platform platform) {
 		velocity_y = 0;
 		jumpHeight = JUMP_HEIGHT;
 		this.getPosition().y += 5;
@@ -221,7 +230,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		return velocity_y;
 	}
 
-	public void setParticleEmitter(ParticleEmitter emitter) {
+	public void setParticleEmitter(final ParticleEmitter emitter) {
 		this.particleEmitter = emitter;
 		dyingParticleBehavior = new MovingParticle(null, 7, -Math.PI * 6/10, -Math.PI * 4/10);
 		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
