@@ -1,24 +1,43 @@
 package nidhogglike.motion;
 
+import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
-import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 
-	public void overlapRule(Sword sword, Player player) {
-		// This is not an error, we want to check that the sword is colliding with another player
-		if (sword.getHolder() != player) {
-			if(sword.isMoving() || sword.getHolder() != null) {
-				player.die();
-			} else if(!player.isHoldingSword()) {
-				player.setSword(sword);
+	public void overlapRule(final Sword sword, final Player player) {
+		if (sword.getHolder() == player) {
+			return;
+		}
+		boolean mustKill = false;
+
+		if(sword.isMoving()) {
+			mustKill = true;
+		} else if (sword.getHolder() != null) {
+			mustKill = player.isKilledBy(sword.getHolder());
+		} else if (!player.isHoldingSword()) {
+			player.setSword(sword);
+		}
+
+		if (mustKill) {
+			player.die();
+		}
+	}
+
+	public void overlapRule(final Sword s1, final Sword s2) {
+		if (s1.isHeld() && s2.isHeld()) {
+			if (!s1.getHolder().isJumping()) {
+				s1.getHolder().pushBackwards();
+			}
+			if (!s2.getHolder().isJumping()) {
+				s2.getHolder().pushBackwards();
 			}
 		}
 	}
-	
-	public void overlapRule(HeadBalloon baloon, Player player) {
+
+	public void overlapRule(final HeadBalloon baloon, final Player player) {
 		baloon.isShootedBy(player);
 	}
 }

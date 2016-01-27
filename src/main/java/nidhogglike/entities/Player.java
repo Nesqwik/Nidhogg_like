@@ -1,13 +1,7 @@
 package nidhogglike.entities;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.net.URL;
-
 import gameframework.assets.Sound;
+import gameframework.base.ObjectWithBoundedBox;
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
@@ -16,6 +10,14 @@ import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.net.URL;
+
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
@@ -62,11 +64,8 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private ParticleBehavior dyingParticleBehavior;
 	private Color color;
 
-	private final boolean isPlayer1;
-
 	public Player(final NidhoggGameData data, final Input input, final boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
-		this.isPlayer1 = isPlayer1;
 		if (isPlayer1) {
 			color = new Color(255, 160, 64);
 			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
@@ -80,8 +79,8 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	protected void initPlayer(String observableDataKey, Point respawnPosition, int keyUp, int keyLeft, int keyDown,
-			int keyRight, int throwKey, Input input, NidhoggGameData data, String spritePath) {
+	protected void initPlayer(final String observableDataKey, final Point respawnPosition, final int keyUp, final int keyLeft, final int keyDown,
+			final int keyRight, final int throwKey, final Input input, final NidhoggGameData data, final String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
@@ -120,7 +119,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(isHeadingLeft() ? 50 : 40, boundingBoxHeight);
+		return new Rectangle(40, boundingBoxHeight);
 	}
 
 	@Override
@@ -154,15 +153,20 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		applyGravity();
 
 		// When the player goes out of bounds
-		if (this.getPosition().x > Nidhogg.WIDTH) {
+		outOfBoundsVerification();
+
+		updateDirection();
+		updateAnimation();
+	}
+
+	protected void outOfBoundsVerification() {
+		if(this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 
 		} else if (this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
-
-		updateDirection();
-		updateAnimation();
+		sword.outOfBoundsVerification();
 	}
 
 	protected void duck() {
@@ -226,7 +230,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		return ducking;
 	}
 
-	public void setSword(Sword sword) {
+	public void setSword(final Sword sword) {
 		sword.setHolder(this);
 		this.sword = sword;
 	}
@@ -251,7 +255,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		recoverSwordIfNeeded();
 	}
 
-	public void announceKills(int deaths) {
+	public void announceKills(final int deaths) {
 		Sound s = null;
 		try {
 			switch (deaths) {
@@ -271,7 +275,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				s = new Sound("/sounds/announcer/monsterkill.wav");
 				break;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
@@ -288,12 +292,19 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	public void refinePositionAfterLateralCollision(final Platform platform) {
-		final boolean leftCollision = this.getPosition().x > platform.getBoundingBox().x;
+	public void refinePositionAfterLateralCollision(final ObjectWithBoundedBox collisioner) {
+		final boolean leftCollision = this.getPosition().x > collisioner.getBoundingBox().x;
+
 		if (leftCollision) {
-			getPosition().x += 1;
+			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width + 10;
+			if (isHoldingSword() && isHeadingLeft()) {
+				getPosition().x += sword.getBoundingBox().width;
+			}
 		} else {
-			getPosition().x -= 1;
+			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width - 10;
+			if (isHoldingSword() && !isHeadingLeft()) {
+				getPosition().x -= sword.getBoundingBox().width;
+			}
 		}
 		applyGravity();
 	}
@@ -314,5 +325,30 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
 		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
 		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
+	}
+
+	public boolean isKilledBy(final Player killer) {
+		final boolean goOppositeDirection = killer.isHeadingLeft() && !this.isHeadingLeft()
+				|| !killer.isHeadingLeft() && this.isHeadingLeft();
+
+		return !goOppositeDirection;
+	}
+
+	public Sword getSword() {
+		return sword;
+	}
+
+	public void pushBackwards() {
+		final int moveSpeed = getSpeedVector().getSpeed();
+		if (isHeadingLeft()) {
+			getPosition().x += moveSpeed;
+		} else {
+			getPosition().x -= moveSpeed;
+		}
+		outOfBoundsVerification();
+	}
+
+	public boolean isJumping() {
+		return jumping;
 	}
 }
