@@ -33,6 +33,10 @@ import nidhogglike.particles.behaviors.ParticleBehavior;
  *         Class representing a player controlled by the keyboard
  */
 public class Player extends NidhoggMovable implements GameEntity, Overlappable {
+	protected static final int DUCKING_HEIGHT_OFFSET = 25;
+	protected static final int HITBOX_HEIGHT = 50;
+	protected static final int DEFAULT_SPEED = 8;
+	protected static final int DUCKING_SPEED = 3;
 	protected float velocity_y;
 	private static float VELOCITY_Y_MAX = 10;
 	private static float GRAVITY = 1f;
@@ -90,7 +94,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 		this.observableDataKey = observableDataKey;
 		this.respawnPosition = respawnPosition;
-		boundingBoxHeight = 50;
+		boundingBoxHeight = HITBOX_HEIGHT;
 	}
 
 	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
@@ -129,9 +133,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		if (input.isPressed(duckKey)) {
 			if (!ducking)
 				duck();
+			moveDriver.getSpeedVector(this).setSpeed(DUCKING_SPEED);
 		} else {
 			if (ducking)
 				unduck();
+			moveDriver.getSpeedVector(this).setSpeed(DEFAULT_SPEED);
 		}
 
 		// Apply gravity
@@ -151,15 +157,15 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	protected void duck() {
 		ducking = true;
-		getPosition().y += 25;
-		boundingBoxHeight = 25;
+		getPosition().y += DUCKING_HEIGHT_OFFSET;
+		boundingBoxHeight = HITBOX_HEIGHT - DUCKING_HEIGHT_OFFSET;
 		spriteTypePrefix = "ducking";
 	}
 
 	protected void unduck() {
 		ducking = false;
-		getPosition().y -= 25;
-		boundingBoxHeight = 50;
+		getPosition().y -= DUCKING_HEIGHT_OFFSET;
+		boundingBoxHeight = HITBOX_HEIGHT;
 		spriteTypePrefix = "heading";
 	}
 
