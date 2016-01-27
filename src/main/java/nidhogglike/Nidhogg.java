@@ -7,6 +7,7 @@ import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
 import nidhogglike.entities.Ground;
+import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
 import nidhogglike.entities.Platform;
