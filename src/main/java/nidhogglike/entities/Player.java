@@ -125,11 +125,6 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
-		if (isHeadingLeft())
-			sprite.setType(spriteTypePrefix + "Left");
-		else
-			sprite.setType(spriteTypePrefix + "Right");
-
 		if (input.isPressed(jumpKey) && jumpHeight < JUMP_HEIGHT) {
 			velocity_y = -10;
 			jumping = true;
@@ -149,6 +144,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				unduck();
 			moveDriver.getSpeedVector(this).setSpeed(DEFAULT_SPEED);
 		}
+		
+		if (isHeadingLeft())
+			sprite.setType(spriteTypePrefix + "Left");
+		else
+			sprite.setType(spriteTypePrefix + "Right");
 
 		// Apply gravity
 		applyGravity();
