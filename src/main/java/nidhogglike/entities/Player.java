@@ -1,5 +1,12 @@
 package nidhogglike.entities;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.net.URL;
+
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
@@ -8,14 +15,6 @@ import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.net.URL;
-
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
@@ -28,11 +27,10 @@ import nidhogglike.particles.behaviors.GravityParticle;
 import nidhogglike.particles.behaviors.MovingParticle;
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
-
 /**
  * @author Team 2
  *
- * Class representing a player controlled by the keyboard
+ *         Class representing a player controlled by the keyboard
  */
 public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected float velocity_y;
@@ -49,7 +47,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int jumpKey;
 	private int duckKey;
 	private int throwKey;
+	private boolean ducking;
 	private boolean headingLeft;
+	private int boundingBoxHeight;
+	protected String spriteTypePrefix;
 	private String observableDataKey;
 	private Point respawnPosition;
 	private ParticleEmitter particleEmitter;
@@ -72,8 +73,8 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	protected void initPlayer(String observableDataKey,Point respawnPosition, int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey, 
-			Input input, NidhoggGameData data, String spritePath) {
+	protected void initPlayer(String observableDataKey, Point respawnPosition, int keyUp, int keyLeft, int keyDown,
+			int keyRight, int throwKey, Input input, NidhoggGameData data, String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
@@ -81,12 +82,15 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		URL playerImage = this.getClass().getResource(spritePath);
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
-		sprite.setTypes("headingLeft", "headingRight");
+		sprite.setTypes("headingLeft", "headingRight", "duckingLeft", "duckingRight");
 		sprite.setType("headingLeft");
+		spriteTypePrefix = "heading";
 		headingLeft = true;
+		ducking = false;
 		setupKeys(keyUp, keyLeft, keyDown, keyRight, throwKey);
 		this.observableDataKey = observableDataKey;
 		this.respawnPosition = respawnPosition;
+		boundingBoxHeight = 50;
 	}
 
 	protected void setupKeys(int keyUp, int keyLeft, int keyDown, int keyRight, int throwKey) {
@@ -102,34 +106,61 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(isHeadingLeft() ? 50 : 40, 50);
+		return new Rectangle(isHeadingLeft() ? 50 : 40, boundingBoxHeight);
 	}
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
+		if (isHeadingLeft())
+			sprite.setType(spriteTypePrefix + "Left");
+		else
+			sprite.setType(spriteTypePrefix + "Right");
+
 		if (input.isPressed(jumpKey) && jumpHeight < JUMP_HEIGHT) {
 			velocity_y = -10;
 			jumping = true;
 			++jumpHeight;
-		} else if(input.isPressed(throwKey) && isHoldingSword()){
+		} else if (input.isPressed(throwKey) && isHoldingSword()) {
 			// Sword throwing
 			sword.playerThrow();
 			sword = null;
+		}
+
+		if (input.isPressed(duckKey)) {
+			if (!ducking)
+				duck();
+		} else {
+			if (ducking)
+				unduck();
 		}
 
 		// Apply gravity
 		applyGravity();
 
 		// When the player goes out of bounds
-		if(this.getPosition().x > Nidhogg.WIDTH) {
+		if (this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 
-		} else if(this.getPosition().x < -this.getBoundingBox().width) {
+		} else if (this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
 
 		updateDirection();
 		updateAnimation();
+	}
+
+	protected void duck() {
+		ducking = true;
+		getPosition().y += 25;
+		boundingBoxHeight = 25;
+		spriteTypePrefix = "ducking";
+	}
+
+	protected void unduck() {
+		ducking = false;
+		getPosition().y -= 25;
+		boundingBoxHeight = 50;
+		spriteTypePrefix = "heading";
 	}
 
 	protected void applyGravity() {
@@ -150,7 +181,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		if (speedVector.getDirection().x != 0) {
 			headingLeft = speedVector.getDirection().x < 0;
 
-			sprite.setType(headingLeft ? "headingLeft" : "headingRight");
+			sprite.setType(spriteTypePrefix + (headingLeft ? "Left" : "Right"));
 		}
 	}
 
@@ -175,6 +206,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		return sword != null;
 	}
 
+	public boolean isDucking() {
+		return ducking;
+	}
+
 	public void setSword(Sword sword) {
 		sword.setHolder(this);
 		this.sword = sword;
@@ -186,8 +221,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void die() {
 		// Particles
-		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width/2, this.getPosition().y + this.getBoundingBox().height/2, 20, dyingParticleBehavior);
-		
+		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width / 2,
+				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
+
 		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
 		this.getPosition().x = respawnPosition.x;
@@ -223,7 +259,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void setParticleEmitter(ParticleEmitter emitter) {
 		this.particleEmitter = emitter;
-		dyingParticleBehavior = new MovingParticle(null, 7, -Math.PI * 6/10, -Math.PI * 4/10);
+		dyingParticleBehavior = new MovingParticle(null, 7, -Math.PI * 6 / 10, -Math.PI * 4 / 10);
 		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
 		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
 		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
