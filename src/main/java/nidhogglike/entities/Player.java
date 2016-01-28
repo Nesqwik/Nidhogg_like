@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import gameframework.assets.Sound;
 import gameframework.base.ObjectWithBoundedBox;
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
@@ -166,7 +165,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		} else if (this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
-		//sword.outOfBoundsVerification();
+		// sword.outOfBoundsVerification();
 	}
 
 	protected void duck() {
@@ -248,39 +247,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, color));
 
 		data.incrementObservableValue(observableDataKey, 1);
-		announceKills(data.getObservableValue(observableDataKey).getValue());
 		// Respawn
 		resetPosition();
 
 		recoverSwordIfNeeded();
-	}
-
-	public void announceKills(final int deaths) {
-		Sound s = null;
-		try {
-			switch (deaths) {
-			case 1:
-				s = new Sound("/sounds/announcer/firstblood.wav");
-				break;
-			case 3:
-				s = new Sound("/sounds/announcer/multikill.wav");
-				break;
-			case 5:
-				s = new Sound("/sounds/announcer/megakill.wav");
-				break;
-			case 10:
-				s = new Sound("/sounds/announcer/ludicrouskill.wav");
-				break;
-			case 15:
-				s = new Sound("/sounds/announcer/monsterkill.wav");
-				break;
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-
-		if (s != null)
-			s.play();
 	}
 
 	protected void recoverSwordIfNeeded() {

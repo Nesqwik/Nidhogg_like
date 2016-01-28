@@ -34,7 +34,18 @@ public class NidhoggAnnouncer {
 	protected void initSounds() {
 		spreeSounds = new HashMap<>();
 		killSounds = new HashMap<>();
-		// TODO: put the names in the maps and initialize the sound vars
+
+		firstBloodSound = "/sounds/announcer/firstblood.wav";
+		paybackSound = "/sounds/announcer/payback.wav";
+
+		spreeSounds.put(3, "/sounds/announcer/killingspree.wav");
+		spreeSounds.put(5, "/sounds/announcer/ownage.wav");
+		spreeSounds.put(10, "/sounds/announcer/unstoppable.wav");
+		spreeSounds.put(15, "/sounds/announcer/godlike.wav");
+
+		killSounds.put(25, "/sounds/announcer/ludicrouskill.wav");
+		killSounds.put(42, "/sounds/announcer/monsterkill.wav");
+		killSounds.put(60, "/sounds/announcer/holyshit.wav");
 	}
 
 	public void registerKill(Player killer) {
@@ -46,7 +57,6 @@ public class NidhoggAnnouncer {
 		}
 
 		killingSprees.set(pos, killingSprees.get(pos) + 1);
-		System.out.println(killingSprees.get(pos));
 		playSound(spreeSounds.get(killingSprees.get(pos)));
 		kills.set(pos, kills.get(pos) + 1);
 		playSound(killSounds.get(kills.get(pos)));
