@@ -166,7 +166,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		} else if (this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
-		sword.outOfBoundsVerification();
+		//sword.outOfBoundsVerification();
 	}
 
 	protected void duck() {
@@ -245,7 +245,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
 
 		// Head
-		data.getUniverse().addGameEntity(new HeadBalloon(this.getPosition().x, this.getPosition().y, color));
+		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, color));
 
 		data.incrementObservableValue(observableDataKey, 1);
 		announceKills(data.getObservableValue(observableDataKey).getValue());

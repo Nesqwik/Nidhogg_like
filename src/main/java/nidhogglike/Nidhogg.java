@@ -84,7 +84,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		universe.addGameEntity(new Platform(50, 250, 100, 10));
 		universe.addGameEntity(new Platform(WIDTH - 150, 250, 100, 10));
 		universe.addGameEntity(new Platform(WIDTH / 2 - 50, 200, 100, 10));
-		universe.addGameEntity(new Platform(WIDTH / 2 - 20, 280, 40, 50));
+		universe.addGameEntity(new Platform(WIDTH / 2 - 20, 280, 40, 70));
 	}
 
 	private void addBigPlatforms() {

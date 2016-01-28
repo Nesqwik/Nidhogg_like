@@ -45,14 +45,8 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	}
 	public void moveBlockerRule(final HeadBalloon b, final Platform platform)
 			throws IllegalMoveException {
-		// This rule was done this way to avoid slowdowns provoked by the java exception system.
-		final int feetY = b.getPosition().y + b.getBoundingBox().height;
-		final int delta = platform.getBoundingBox().y - feetY;
 
-		// if the baloon is colliding on the obstacle
-		if (Math.abs(delta) < 20) {
-			b.platformCollision(platform);
-		} else if (b.getVelocityY() < 0) {
+		if (Math.abs(b.getVelocityY()) > Math.abs(b.getVelocityX())) {
 			b.platformCollision(platform);
 			throw new IllegalMoveException();
 		} else {
