@@ -1,5 +1,12 @@
 package nidhogglike.entities;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.net.URL;
+
 import gameframework.assets.Sound;
 import gameframework.base.ObjectWithBoundedBox;
 import gameframework.drawing.DrawableImage;
@@ -10,14 +17,6 @@ import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.net.URL;
-
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
@@ -79,8 +78,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	protected void initPlayer(final String observableDataKey, final Point respawnPosition, final int keyUp, final int keyLeft, final int keyDown,
-			final int keyRight, final int throwKey, final Input input, final NidhoggGameData data, final String spritePath) {
+	protected void initPlayer(final String observableDataKey, final Point respawnPosition, final int keyUp,
+			final int keyLeft, final int keyDown, final int keyRight, final int throwKey, final Input input,
+			final NidhoggGameData data, final String spritePath) {
 		jumping = false;
 		incrementStep = 0;
 		this.input = input;
@@ -143,7 +143,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				unduck();
 			moveDriver.getSpeedVector(this).setSpeed(DEFAULT_SPEED);
 		}
-		
+
 		if (isHeadingLeft())
 			sprite.setType(spriteTypePrefix + "Left");
 		else
@@ -160,7 +160,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	protected void outOfBoundsVerification() {
-		if(this.getPosition().x > Nidhogg.WIDTH) {
+		if (this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 
 		} else if (this.getPosition().x < -this.getBoundingBox().width) {
@@ -328,8 +328,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	public boolean isKilledBy(final Player killer) {
-		final boolean goOppositeDirection = killer.isHeadingLeft() && !this.isHeadingLeft()
-				|| !killer.isHeadingLeft() && this.isHeadingLeft();
+		final boolean goOppositeDirection = killer.isHeadingLeft() != this.isHeadingLeft();
 
 		return !goOppositeDirection;
 	}

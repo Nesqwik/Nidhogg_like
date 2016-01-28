@@ -4,8 +4,15 @@ import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
+import nidhogglike.game.NidhoggAnnouncer;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
+
+	protected NidhoggAnnouncer announcer;
+
+	public NidhoggOverlapRulesApplier(NidhoggAnnouncer announcer) {
+		this.announcer = announcer;
+	}
 
 	public void overlapRule(final Sword sword, final Player player) {
 		if (sword.getHolder() == player) {
@@ -13,15 +20,21 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 		}
 		boolean mustKill = false;
 
-		if(sword.isMoving()) {
+		if (sword.isMoving()) {
 			mustKill = true;
+			if (sword.getLastHolder() == player)
+				announcer.registerSuicide(player);
+			else
+				announcer.registerKill(sword.getLastHolder());
 		} else if (sword.getHolder() != null) {
 			mustKill = player.isKilledBy(sword.getHolder());
+			announcer.registerKill(sword.getHolder());
 		} else if (!player.isHoldingSword()) {
 			player.setSword(sword);
 		}
 
 		if (mustKill) {
+			announcer.registerDeath(player);
 			player.die();
 		}
 	}

@@ -1,12 +1,11 @@
 package nidhogglike;
 
+import java.util.Arrays;
+
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
-
-import java.util.Arrays;
-
 import nidhogglike.entities.Ground;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
@@ -19,10 +18,9 @@ import nidhogglike.particles.ParticleEmitter;
 /**
  * @author Team 2
  *
- * Main class of the game
+ *         Main class of the game
  *
- * Create the game window, canvas and entities
- * then start the main loop
+ *         Create the game window, canvas and entities then start the main loop
  */
 public class Nidhogg extends GameLevelDefaultImpl {
 	public static final String PLAYER2_DATA_KEY = "player2";
@@ -44,7 +42,9 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		super(gameData, (int) (1000f / FPS));
 	}
 
-	/** (non-Javadoc)
+	/**
+	 * (non-Javadoc)
+	 * 
 	 * @see gameframework.game.GameLevelDefaultImpl#init()
 	 */
 	@Override
@@ -70,12 +70,14 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		universe.addGameEntity(j2sword);
 		universe.addGameEntity(new Ground());
 
+		((NidhoggConfiguration) data.getConfiguration()).getAnnouncer().addPlayer(j1);
+		((NidhoggConfiguration) data.getConfiguration()).getAnnouncer().addPlayer(j2);
+
 		if (bigScreen) {
 			addBigPlatforms();
 		} else {
 			addSmallPlatforms();
 		}
-
 
 		universe.addGameEntity(emitter);
 	}
@@ -88,7 +90,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	}
 
 	private void addBigPlatforms() {
-		//TODO : Ajouter des plateformes
+		// TODO : Ajouter des plateformes
 		universe.addGameEntity(new Platform(50, 450, 200, 10));
 		universe.addGameEntity(new Platform(WIDTH - 250, 450, 200, 10));
 
@@ -107,16 +109,21 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		Nidhogg.WIDTH = bigScreen ? BIG_WIDTH : SMALL_WIDTH;
 		Nidhogg.HEIGHT = bigScreen ? BIG_HEIGHT : SMALL_HEIGHT;
 
-		final NidhoggConfiguration configuration = new NidhoggConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE, SPRITE_SIZE, 42);
+		final NidhoggConfiguration configuration = new NidhoggConfiguration(HEIGHT / SPRITE_SIZE, WIDTH / SPRITE_SIZE,
+				SPRITE_SIZE, 42);
 		final NidhoggGameData gameData = new NidhoggGameData(configuration);
-		// GameWindow gameWindow = new GameWindow("Nidhogg", gameData.getCanvas(), gameData);
+		// GameWindow gameWindow = new GameWindow("Nidhogg",
+		// gameData.getCanvas(), gameData);
 		gameData.setObservableValue(PLAYER1_DATA_KEY, 0);
 		gameData.setObservableValue(PLAYER2_DATA_KEY, 0);
 
-		final GameStatusBarElement<Integer> player1 = new GameStatusBarElement<>("Player 1 : ", gameData.getObservableValue(PLAYER1_DATA_KEY));
-		final GameStatusBarElement<Integer> player2 = new GameStatusBarElement<>("Player 2 : ", gameData.getObservableValue(PLAYER2_DATA_KEY));
+		final GameStatusBarElement<Integer> player1 = new GameStatusBarElement<>("Player 1 : ",
+				gameData.getObservableValue(PLAYER1_DATA_KEY));
+		final GameStatusBarElement<Integer> player2 = new GameStatusBarElement<>("Player 2 : ",
+				gameData.getObservableValue(PLAYER2_DATA_KEY));
 
-		final GameWindow gameWindow = new GameWindow("Nidhogg", gameData.getCanvas(), gameData.getConfiguration(), player1, player2);
+		final GameWindow gameWindow = new GameWindow("Nidhogg", gameData.getCanvas(), gameData.getConfiguration(),
+				player1, player2);
 		gameWindow.createGUI();
 		new Nidhogg(gameData).start();
 	}
