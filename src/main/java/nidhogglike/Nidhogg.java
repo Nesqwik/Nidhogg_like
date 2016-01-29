@@ -2,6 +2,7 @@ package nidhogglike;
 
 import java.util.Arrays;
 
+
 import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
@@ -14,6 +15,10 @@ import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
+
+import nidhogglike.surprise.Gift;
+import nidhogglike.surprise.SurpriseGift;
+
 
 /**
  * @author Team 2
@@ -78,7 +83,14 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		} else {
 			addSmallPlatforms();
 		}
-
+		
+		SurpriseGift surprise = new SurpriseGift(data);
+		surprise.setGift(new Gift(200));
+		
+		j1.setSurpriseGift(surprise);
+		j2.setSurpriseGift(surprise);
+		
+		universe.addGameEntity(surprise);
 		universe.addGameEntity(emitter);
 	}
 
