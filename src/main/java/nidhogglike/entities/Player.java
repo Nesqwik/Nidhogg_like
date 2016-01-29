@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
+
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
@@ -27,7 +28,8 @@ import nidhogglike.particles.behaviors.DyingParticle;
 import nidhogglike.particles.behaviors.GravityParticle;
 import nidhogglike.particles.behaviors.MovingParticle;
 import nidhogglike.particles.behaviors.ParticleBehavior;
-
+import nidhogglike.surprise.Gift;
+import nidhogglike.surprise.SurpriseGift;
 
 /**
  * @author Team 2
@@ -55,6 +57,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private ParticleEmitter particleEmitter;
 	private ParticleBehavior dyingParticleBehavior;
 	private Color color;
+	private SurpriseGift surpriseGift;
 
 	public Player(NidhoggGameData data, Input input, boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
@@ -170,6 +173,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public void draw(Graphics g) {
 		sprite.draw(g, position);
 	}
+	
+	public void setSurpriseGift(SurpriseGift sg) {
+		this.surpriseGift = sg;
+	}
 
 	public boolean isHoldingSword() {
 		return sword != null;
@@ -199,6 +206,14 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				setSword(sword);
 			}
 		}
+		
+		int score = this.data.getObservableValue(observableDataKey).getValue();
+		
+		if (score %10 == 5) {
+			int alea = 50 + (int)(Math.random()*400);
+			this.surpriseGift.setGift(new Gift(alea));
+			this.surpriseGift.setCanDraw(true);
+		}
 	}
 
 	public void refinePositionAfterLateralCollision(Platform platform) {
@@ -227,5 +242,15 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
 		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
 		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
+	}
+	
+	
+
+	public void increaseScore(int add) {
+		this.data.getScore().setValue(this.data.getScore().getValue() + add);
+	}
+
+	public void isTakingGift(SurpriseGift s) {
+		s.getGift().openGift(this);
 	}
 }

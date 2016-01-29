@@ -2,6 +2,7 @@ package nidhogglike.motion;
 
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
+import nidhogglike.surprise.SurpriseGift;
 import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
@@ -14,6 +15,12 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			} else if(!player.isHoldingSword()) {
 				player.setSword(sword);
 			}
+		}
+	}
+	
+	public void overlapRule(SurpriseGift s, Player player) {
+		if (s.getHolder() != player) {
+			player.isTakingGift(s);
 		}
 	}
 }
