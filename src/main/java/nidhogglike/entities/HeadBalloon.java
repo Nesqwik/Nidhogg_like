@@ -125,7 +125,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		data.getUniverse().removeGameEntity(this);
 	}
 
-	public void isShootedBy(Player player) {
+	public void isShotBy(Player player) {
 		decrementTTL();
 		velocity_y = 25;
 		float yspeed = (player.isDucking() ? 4 : 8);
