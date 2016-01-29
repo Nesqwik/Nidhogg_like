@@ -8,6 +8,7 @@ import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
 import nidhogglike.entities.Ground;
+import nidhogglike.entities.LifeBar;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
@@ -92,6 +93,8 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		
 		universe.addGameEntity(surprise);
 		universe.addGameEntity(emitter);
+		universe.addGameEntity(new LifeBar(5, j1));
+		universe.addGameEntity(new LifeBar(5, j2));
 	}
 
 	private void addSmallPlatforms() {
