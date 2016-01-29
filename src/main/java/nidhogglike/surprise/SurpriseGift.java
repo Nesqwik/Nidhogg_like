@@ -91,6 +91,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		gravityDelay = GRAVITY_DELAY;
 		this.holder = null;
 		setMoving(true);
+		applyGravity();
 	}
 
 	private void setMoving(boolean b) {
@@ -127,5 +128,11 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	
 	public Gift getGift() {
 		return gift;
+	}
+
+	public void takingGift(Player player) {
+		this.gift.openGift(player);
+		this.canDraw = false;
+		//this.gift.
 	}
 }
