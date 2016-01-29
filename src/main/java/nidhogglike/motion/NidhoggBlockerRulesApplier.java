@@ -118,17 +118,16 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	}
 	public void moveBlockerRule(SurpriseGift s, Ground ground)
 			throws IllegalMoveException {
+		s.setMoving(false);
 		s.groundCollision(ground);
 	}
 	
 	public void moveBlockerRule(SurpriseGift s, Platform p)
 			throws IllegalMoveException {
-		final int py = p.getBoundingBox().y + p.getBoundingBox().height;
 		
-		if (s.getPosition().y <= py) {
-			s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
-		}
-		
-		s.groundCollision(p);
+		if (!s.getGift().isOpened()) {
+			s.setMoving(false);
+			s.groundCollision(p);
+		} 
 	}
 }

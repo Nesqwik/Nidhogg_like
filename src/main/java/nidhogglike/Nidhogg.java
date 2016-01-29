@@ -84,13 +84,13 @@ public class Nidhogg extends GameLevelDefaultImpl {
 			addSmallPlatforms();
 		}
 		
-		SurpriseGift surprise = new SurpriseGift(data);
-		surprise.setGift(new Gift(200));
-		
-		j1.setSurpriseGift(surprise);
-		j2.setSurpriseGift(surprise);
-		
-		universe.addGameEntity(surprise);
+//		SurpriseGift surprise = new SurpriseGift(data);
+//		surprise.setGift(new Gift(200));
+//		
+//		j1.setSurpriseGift(surprise);
+//		j2.setSurpriseGift(surprise);
+//		
+//		universe.addGameEntity(surprise);
 		universe.addGameEntity(emitter);
 	}
 
