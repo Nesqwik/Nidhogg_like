@@ -28,6 +28,8 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 				announcer.registerKill(sword.getLastHolder());
 		} else if (sword.getHolder() != null) {
 			mustKill = player.isKilledBy(sword.getHolder());
+			
+			
 			announcer.registerKill(sword.getHolder());
 		} else if (!player.isHoldingSword()) {
 			player.setSword(sword);
