@@ -1,10 +1,11 @@
 package nidhogglike.game;
 
+import gameframework.assets.Sound;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import gameframework.assets.Sound;
 import nidhogglike.entities.Player;
 
 public class NidhoggAnnouncer {
@@ -48,8 +49,8 @@ public class NidhoggAnnouncer {
 		killSounds.put(60, "/sounds/announcer/holyshit.wav");
 	}
 
-	public void registerKill(Player killer) {
-		int pos = players.indexOf(killer);
+	public void registerKill(final Player killer) {
+		final int pos = players.indexOf(killer);
 
 		if (!firstBlood) {
 			firstBlood = true;
@@ -62,8 +63,8 @@ public class NidhoggAnnouncer {
 		playSound(killSounds.get(kills.get(pos)));
 	}
 
-	public void registerDeath(Player killee) { // haha
-		int pos = players.indexOf(killee);
+	public void registerDeath(final Player killee) { // haha
+		final int pos = players.indexOf(killee);
 
 		if (killingSprees.get(pos) >= PAYBACK_THRESHOLD) {
 			playSound(paybackSound);
@@ -72,24 +73,23 @@ public class NidhoggAnnouncer {
 		killingSprees.set(pos, 0);
 	}
 
-	public void registerSuicide(Player player) {
+	public void registerSuicide(final Player player) {
 		playSound(suicideSound);
 		registerDeath(player);
 	}
 
-	protected void playSound(String str) {
+	protected void playSound(final String str) {
 		if (str == null || (sound != null && sound.isPlaying()))
 			return;
 
 		try {
 			sound = new Sound(str);
 			sound.play();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (final Exception e) {
 		}
 	}
 
-	public void addPlayer(Player p) {
+	public void addPlayer(final Player p) {
 		players.add(p);
 		killingSprees.add(0);
 		kills.add(0);
