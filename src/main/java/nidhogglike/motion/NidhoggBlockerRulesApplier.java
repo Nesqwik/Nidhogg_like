@@ -118,7 +118,6 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	}
 	public void moveBlockerRule(SurpriseGift s, Ground ground)
 			throws IllegalMoveException {
-		s.setMoving(false);
 		s.groundCollision(ground);
 	}
 	

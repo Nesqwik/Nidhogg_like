@@ -40,11 +40,6 @@ public class Gift {
 		sprite.setType("good");
 	}
 
-	public void removeIsOpened(List<Gift> gifts) {
-		if (this.isOpened()) {
-			gifts.remove(this);
-		}
-	}
 
 	
 }

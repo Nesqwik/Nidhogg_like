@@ -261,7 +261,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		resetPosition();
 
 		recoverSwordIfNeeded();
-//		addGift();
+		addGift();
 	}
 
 	protected void recoverSwordIfNeeded() {

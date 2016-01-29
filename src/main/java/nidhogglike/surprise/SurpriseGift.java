@@ -3,7 +3,6 @@ package nidhogglike.surprise;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.net.URL;
-import java.util.LinkedList;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.entities.Player;
@@ -82,19 +81,13 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
-		this.getPosition().x += 200;
-		gravityDelay -= 1;
-
-		if (gravityDelay <= 0) {
-			applyGravity();
-		}
+		applyGravity();
 
 	}
 
 	public void appear() {
 		this.holder = null;
 		setMoving(true);
-		applyGravity();
 	}
 
 	public void setMoving(boolean b) {
@@ -137,6 +130,5 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	public void takingGift(Player player) {
 		this.gift.openGift(player);
 		this.canDraw = false;
-		//this.gift.
 	}
 }
