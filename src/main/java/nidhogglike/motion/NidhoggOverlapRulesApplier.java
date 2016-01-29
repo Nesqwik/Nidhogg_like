@@ -12,6 +12,7 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 		if (sword.getHolder() != player) {
 			if(sword.isMoving() || sword.getHolder() != null) {
 				player.die();
+				
 			} else if(!player.isHoldingSword()) {
 				player.setSword(sword);
 			}
