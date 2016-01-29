@@ -5,6 +5,7 @@ import gameframework.motion.IllegalMoveException;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
 
+import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
@@ -29,19 +30,42 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(final Player p, final Platform platform)
 			throws IllegalMoveException {
 
-		// This rule was done this way to avoid slowdowns provoked by the java exception system.
-		final int feetY = p.getPosition().y + p.getBoundingBox().height;
-		final int delta = platform.getBoundingBox().y - feetY;
+		if (!p.getBoundingBox().intersects(platform.getBoundingBox()))
+			return;
+		else {
+			// This rule was done this way to avoid slowdowns provoked by the java exception system.
+			final int feetY = p.getPosition().y + p.getBoundingBox().height;
+//			final int delta = platform.getBoundingBox().y - feetY;
+//			
+//			// if the player is standing on the obstacle
+//			if (Math.abs(delta) < 20) {
+//				p.groundCollision(platform);
+//			}
+//			
+			Rectangle collision = p.getBoundingBox().intersection(platform.getBoundingBox());
+			//&& p.getPosition().y < (platform.getBoundingBox().y + platform.getBoundingBox().width / 3)
+			if (collision.width > collision.height) {
+				if (p.getVelocityY() >= 0 && feetY < (platform.getBoundingBox().y + platform.getBoundingBox().height)) {
+//					if (!p.isJumping())
+						p.groundCollision(platform);
+				}
+			} else {
+				if (p.getVelocityY() <= 0 && !p.isJumping()) {
+					p.refinePositionAfterLateralCollision(platform);
+				} else {
+					System.out.println("other");
+				}
+			}
 
-		// if the player is standing on the obstacle
-		if (Math.abs(delta) < 20) {
-			p.groundCollision(platform);
-		} else if (p.getVelocityY() < 0) {
-			p.roofCollision(platform);
-			throw new IllegalMoveException();
-		} else {
-			p.refinePositionAfterLateralCollision(platform);
-			throw new IllegalMoveException();
+//			else if (Math.abs(p.getPosition().y - platform.getBoundingBox().y) < 20) {
+//				System.out.println("roof");
+//				p.roofCollision(platform);
+//				throw new IllegalMoveException();
+//			} else {
+//				System.out.println("lateral");
+//				p.refinePositionAfterLateralCollision(platform);
+//				throw new IllegalMoveException();
+//			}
 		}
 	}
 	public void moveBlockerRule(final HeadBalloon b, final Platform platform)
@@ -83,8 +107,6 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 
 			s.setMoving(false);
 			s.groundCollision(p);
-		} else if (!s.getHolder().isJumping()) {
-			s.getHolder().refinePositionAfterLateralCollision(p);
 		}
 	}
 
@@ -126,15 +148,15 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 			throws IllegalMoveException {
 		s.groundCollision(ground);
 	}
-	
+
 	public void moveBlockerRule(SurpriseGift s, Platform p)
 			throws IllegalMoveException {
 		final int py = p.getBoundingBox().y + p.getBoundingBox().height;
-		
+
 		if (s.getPosition().y <= py) {
 			s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
 		}
-		
+
 		s.groundCollision(p);
 	}
 }

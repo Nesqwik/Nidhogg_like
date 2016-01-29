@@ -2,8 +2,11 @@ package nidhogglike.game;
 
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameUniverse;
+import gameframework.motion.blocking.MoveBlockerChecker;
+import gameframework.motion.blocking.MoveBlockerCheckerDefaultImpl;
 import gameframework.motion.blocking.MoveBlockerRulesApplier;
 import gameframework.motion.overlapping.OverlapRulesApplier;
+import nidhogglike.motion.NidhoggBlockerChecker;
 import nidhogglike.motion.NidhoggBlockerRulesApplier;
 import nidhogglike.motion.NidhoggOverlapRulesApplier;
 
@@ -33,5 +36,10 @@ public class NidhoggConfiguration extends GameConfiguration {
 
 	public NidhoggAnnouncer getAnnouncer() {
 		return announcer;
+	}
+	
+	@Override
+	public MoveBlockerChecker createMoveBlockerChecker() {
+		return new NidhoggBlockerChecker();
 	}
 }

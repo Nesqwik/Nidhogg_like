@@ -59,7 +59,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int throwKey;
 	private boolean ducking;
 	private boolean headingLeft;
-	private int boundingBoxHeight;
+	private int boundingBoxHeight = 0;
 	protected String spriteTypePrefix;
 	private String observableDataKey;
 	private Point respawnPosition;
@@ -120,11 +120,14 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		this.jumpKey = keyUp;
 		this.duckKey = keyDown;
 		this.throwKey = throwKey;
+		boundingBox = new Rectangle(0, 0, 40, HITBOX_HEIGHT);
 	}
 
+	private Rectangle boundingBox;
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(40, boundingBoxHeight);
+		boundingBox = new Rectangle(getPosition().x, getPosition().y, boundingBox.width, boundingBoxHeight);
+		return boundingBox;
 	}
 
 	@Override
@@ -200,6 +203,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		jumping = false;
 		jumpHeight = 0;
 		velocity_y = 0;
+
 	}
 
 	protected void updateDirection() {
@@ -226,7 +230,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public void draw(final Graphics g) {
 		sprite.draw(g, position);
 	}
-	
+
 	public void setSurpriseGift(SurpriseGift sg) {
 		this.surpriseGift = sg;
 	}
@@ -270,9 +274,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				setSword(sword);
 			}
 		}
-		
+
 		int score = this.data.getObservableValue(observableDataKey).getValue();
-		
+
 		if (score %10 == 5) {
 			int alea = 50 + (int)(Math.random()*400);
 			Gift gift = new Gift(alea);
@@ -282,27 +286,20 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	public void refinePositionAfterLateralCollision(final ObjectWithBoundedBox collisioner) {
-		final boolean leftCollision = this.getPosition().x > collisioner.getBoundingBox().x;
+	public void refinePositionAfterLateralCollision(final Platform collisioner) {
+		final boolean leftCollision = this.getPosition().x > collisioner.getBoundingBox().x + (collisioner.getBoundingBox().width / 2);
 
 		if (leftCollision) {
-			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width + 10;
-			if (isHoldingSword() && isHeadingLeft()) {
-				getPosition().x += sword.getBoundingBox().width;
-			}
+			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width;
 		} else {
-			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width - 10;
-			if (isHoldingSword() && !isHeadingLeft()) {
-				getPosition().x -= sword.getBoundingBox().width;
-			}
+			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width;
 		}
-		applyGravity();
 	}
 
 	public void roofCollision(final Platform platform) {
-		velocity_y = 0;
+		getPosition().y = platform.getBoundingBox().y + platform.getBoundingBox().height;
+		velocity_y = GRAVITY;
 		jumpHeight = JUMP_HEIGHT;
-		this.getPosition().y += 5;
 	}
 
 	public float getVelocityY() {
@@ -316,7 +313,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
 		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
 	}
-	
+
 
 	public void increaseScore(int add) {
 		this.data.getScore().setValue(this.data.getScore().getValue() + add);
@@ -349,4 +346,5 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public boolean isJumping() {
 		return jumping;
 	}
+
 }
