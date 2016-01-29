@@ -1,10 +1,11 @@
 package nidhogglike.motion;
 
-import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
 import nidhogglike.game.NidhoggAnnouncer;
+import nidhogglike.surprise.SurpriseGift;
+import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 
@@ -28,6 +29,8 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 				announcer.registerKill(sword.getLastHolder());
 		} else if (sword.getHolder() != null) {
 			mustKill = player.isKilledBy(sword.getHolder());
+			
+			
 			announcer.registerKill(sword.getHolder());
 		} else if (!player.isHoldingSword()) {
 			player.setSword(sword);
@@ -49,8 +52,16 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			}
 		}
 	}
-
-	public void overlapRule(final HeadBalloon baloon, final Player player) {
-		baloon.isShootedBy(player);
+	
+	public void overlapRule(SurpriseGift s, Player player) {
+		if (s.getHolder() != player) {
+			player.isTakingGift(s);
+		}
 	}
+	
+	public void overlapRule(final HeadBalloon baloon, final Player player) {
+		baloon.isShotBy(player);
+	}
+	
+	
 }

@@ -13,7 +13,7 @@ import nidhogglike.motion.NidhoggMovable;
 
 public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEntity {
 
-	private static final int INITIAL_TTL = 20;
+	private static final int INITIAL_TTL = 10 * 60;
 	private int current_ttl = INITIAL_TTL;
 	private float velocity_x;
 	private float velocity_y;
@@ -27,10 +27,16 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 	
 	public HeadBalloon(final NidhoggGameData data, int x, int y, Color color) {
 		setPosition(new Point(x, y));
-		velocity_x = 5f;
+		velocity_x = getRandomSpeed(-10, 10);
+		velocity_y = getRandomSpeed(-10, 10);
+		
 		this.data = data;
 		this.color = color;
-	} 
+	}
+	
+	private float getRandomSpeed(float min, float max) {
+		return min + (float)(Math.random() * ((max - min) + 1));
+	}
 	
 	@Override
 	public Rectangle getBoundingBox() {
@@ -45,6 +51,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
+		
 		applyGravity();
 		this.getPosition().x += velocity_x;
 		
@@ -57,13 +64,16 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		}
 		
 		
-		// When the player goes out of bounds
+		// When the ball goes out of bounds
 		if(this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 
 		} else if(this.getPosition().x < -this.getBoundingBox().width) {
 			this.getPosition().x = Nidhogg.WIDTH;
 		}
+		
+		decrementTTL();
+
 	}
 
 	
@@ -83,7 +93,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 	}
 
 	public void platformCollision(Platform platform) {
-		this.getPosition().y -= velocity_y;
+		goToLastPosition();
 		energyLossesY();
 		energyLossesX();
 		velocity_y = - velocity_y;
@@ -104,14 +114,16 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 			velocity_x += ENERGY_LOSSES;
 		}
 	}
+	
+	private void goToLastPosition() {
+		this.getPosition().x -= velocity_x;
+		this.getPosition().y -= velocity_y;
+	}
 
 	public void LateralCollision(Platform platform) {
-		System.out.println(this.getPosition().x + "-" + velocity_x);
-		this.getPosition().x -= velocity_x;
-		System.out.println("= " +this.getPosition().x);
+		goToLastPosition();
 		energyLossesX();
 		velocity_x = - velocity_x;
-		decrementTTL();
 	}
 	
 	private void decrementTTL() {
@@ -125,8 +137,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		data.getUniverse().removeGameEntity(this);
 	}
 
-	public void isShootedBy(Player player) {
-		decrementTTL();
+	public void isShotBy(Player player) {
 		velocity_y = 25;
 		float yspeed = (player.isDucking() ? 4 : 8);
 		velocity_x = (player.isHeadingLeft() ? -yspeed : yspeed);
