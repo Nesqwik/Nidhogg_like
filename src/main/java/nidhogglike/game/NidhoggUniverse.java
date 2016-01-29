@@ -17,15 +17,11 @@ import gameframework.motion.SpeedVector;
 public class NidhoggUniverse extends GameUniverseDefaultImpl {
 	
 	protected List<Sword> swords = new ArrayList<>();
-	protected List<SurpriseGift> surprises = new ArrayList<>();
 	
 	@Override
 	public synchronized void addGameEntity(GameEntity gameEntity) {
 		if (gameEntity instanceof Sword) {
 			swords.add((Sword) gameEntity);
-		}
-		if (gameEntity instanceof SurpriseGift) {
-			surprises.add((SurpriseGift) gameEntity);
 		}
 		super.addGameEntity(gameEntity);
 	}

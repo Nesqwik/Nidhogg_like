@@ -20,7 +20,6 @@ import gameframework.motion.overlapping.Overlappable;
 public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlappable {
 	protected Gift gift;
 	private Player holder;
-	protected boolean isMovable;
 	protected SpriteManager sprite;
 	protected Boolean isGoodGift;
 	protected Boolean canDraw;
@@ -31,7 +30,6 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	private static float VELOCITY_Y_MAX = 5;
 
 	public SurpriseGift(GameData data) {
-		this.isMovable = false;
 		URL playerImage = this.getClass().getResource("/images/sword.png");
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 1);
@@ -71,7 +69,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 
 	@Override
 	public boolean isMovable() {
-		return isMovable;
+		return true;
 	}
 
 	@Override
@@ -121,6 +119,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		velocity_y = 0;
 		isOnGround = true;
 		setMoving(false);
+		this.getPosition().y = platform.getBoundingBox().y - 5;
 	}
 
 	public Gift getGift() {
@@ -131,4 +130,6 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		this.gift.openGift(player);
 		this.canDraw = false;
 	}
+	
+	
 }
