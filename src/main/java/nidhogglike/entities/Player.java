@@ -261,6 +261,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		resetPosition();
 
 		recoverSwordIfNeeded();
+//		addGift();
 	}
 
 	protected void recoverSwordIfNeeded() {
@@ -271,9 +272,12 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 			}
 		}
 		
-		int score = this.data.getObservableValue(observableDataKey).getValue();
 		
-		if (score %10 == 5) {
+	}
+
+	protected void addGift() {
+		int score = this.data.getObservableValue(observableDataKey).getValue();
+		if (score % 10 == 5) {
 			int alea = 50 + (int)(Math.random()*400);
 			Gift gift = new Gift(alea);
 			this.surpriseGift.setGift(gift);

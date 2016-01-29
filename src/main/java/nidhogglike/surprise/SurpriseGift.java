@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.net.URL;
 import java.util.LinkedList;
 
+import nidhogglike.Nidhogg;
 import nidhogglike.entities.Player;
 import nidhogglike.motion.NidhoggMovable;
 
@@ -29,8 +30,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	private boolean isMoving;
 	private static float GRAVITY = 1f;
 	private static float VELOCITY_Y_MAX = 5;
-	private static int GRAVITY_DELAY = 20;
-	
+
 	public SurpriseGift(GameData data) {
 		this.isMovable = false;
 		URL playerImage = this.getClass().getResource("/images/sword.png");
@@ -41,8 +41,10 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		this.isGoodGift = true;
 		this.velocity_y = 0;
 		this.canDraw=false;
+		this.getPosition().y = 0;
+		this.getPosition().x = Nidhogg.WIDTH / 2;
 	}
-	
+
 	protected void update(Gift gift) {
 		gift.setTypeSprite(sprite);
 	}
@@ -51,19 +53,21 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	public void draw(Graphics g) {
 		update(gift);
 		if (!gift.isOpened() && canDraw) {
-			position.x = gift.getPositionX();
-			position.y = 200;
+			if (!isOnGround) {
+				applyGravity();
+			}
 			sprite.draw(g, position);
 		}
-		
+
 	}
-	
+
 	public void setCanDraw(Boolean maybe) {
 		canDraw = maybe;
 	}
 
 	public void setGift(Gift surprise) {
 		this.gift = surprise;
+		this.position.y = 0;
 	}
 
 	@Override
@@ -80,27 +84,26 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	public void oneStepMoveAddedBehavior() {
 		this.getPosition().x += 200;
 		gravityDelay -= 1;
-		
+
 		if (gravityDelay <= 0) {
 			applyGravity();
 		}
 
 	}
-	
+
 	public void appear() {
-		gravityDelay = GRAVITY_DELAY;
 		this.holder = null;
 		setMoving(true);
 		applyGravity();
 	}
 
-	private void setMoving(boolean b) {
+	public void setMoving(boolean b) {
 		this.isMoving = b;
 		if (!isMoving) {
 			gravityDelay = 0;
 		}
 	}
-	
+
 	public boolean isMoving() {
 		return this.isMoving;
 	}
@@ -111,21 +114,22 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		velocity_y = Math.min(velocity_y, VELOCITY_Y_MAX);
 		this.getPosition().y += velocity_y;
 	}
-	
+
 	public void setHolder(Player player) {
 		this.holder = player;
 	}
-	
+
 	public Player getHolder() {
 		return holder;
 	}
-	
+
+	protected boolean isOnGround = false;
 	public void groundCollision(MoveBlocker platform) {
-		// Collision with the ground
-		this.getPosition().y = platform.getBoundingBox().y - this.getBoundingBox().height;
 		velocity_y = 0;
+		isOnGround = true;
+		setMoving(false);
 	}
-	
+
 	public Gift getGift() {
 		return gift;
 	}

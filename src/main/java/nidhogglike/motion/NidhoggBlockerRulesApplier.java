@@ -1,23 +1,19 @@
 package nidhogglike.motion;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Vector;
-
-
 import gameframework.motion.GameMovable;
 import gameframework.motion.IllegalMoveException;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Vector;
 
 import nidhogglike.entities.Ground;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
-
 import nidhogglike.surprise.SurpriseGift;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
@@ -78,35 +74,12 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 
 	public void moveBlockerRule(final Sword s, final Platform p)
 			throws IllegalMoveException {
-
 		if (!s.isHeld()) {
-			final int py = p.getBoundingBox().y + p.getBoundingBox().height;
-
-			if (s.getPosition().y <= py) {
-				s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
-			}
-
 			s.setMoving(false);
 			s.groundCollision(p);
 		} else if (!s.getHolder().isJumping()) {
 			s.getHolder().refinePositionAfterLateralCollision(p);
 		}
-	}
-	
-	public void moveBlockerRule(SurpriseGift s, Ground ground)
-			throws IllegalMoveException {
-		s.groundCollision(ground);
-	}
-	
-	public void moveBlockerRule(SurpriseGift s, Platform p)
-			throws IllegalMoveException {
-		final int py = p.getBoundingBox().y + p.getBoundingBox().height;
-		
-		if (s.getPosition().y <= py) {
-			s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
-		}
-		
-		s.groundCollision(p);
 	}
 
 
@@ -142,5 +115,19 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 
 	public MoveBlocker getLastBlockingBlocker() {
 		return lastBlockingBlocker;
+	}
+	public void moveBlockerRule(SurpriseGift s, Ground ground)
+			throws IllegalMoveException {
+		s.setMoving(false);
+		s.groundCollision(ground);
+	}
+	
+	public void moveBlockerRule(SurpriseGift s, Platform p)
+			throws IllegalMoveException {
+		
+		if (!s.getGift().isOpened()) {
+			s.setMoving(false);
+			s.groundCollision(p);
+		} 
 	}
 }
