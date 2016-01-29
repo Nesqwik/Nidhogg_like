@@ -74,12 +74,6 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(final Sword s, final Platform p)
 			throws IllegalMoveException {
 		if (!s.isHeld()) {
-			final int py = p.getBoundingBox().y + p.getBoundingBox().height;
-
-			if (s.getPosition().y <= py) {
-				s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
-			}
-
 			s.setMoving(false);
 			s.groundCollision(p);
 		} else if (!s.getHolder().isJumping()) {

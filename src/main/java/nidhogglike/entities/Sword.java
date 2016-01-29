@@ -31,6 +31,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	private boolean isMoving = false;
 
 	private Player lastHolder = null;
+	private boolean planted = false;
 
 	public Sword(final GameData data, final boolean isHeadingLeft){
 		super(new GameMovableDriverDefaultImpl());
@@ -73,7 +74,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 			this.getPosition().x += velocity_x * (isHeadingLeft ? -1 : 1);
 			gravityDelay -= 1;
 
-			if (gravityDelay <= 0) {
+			if (gravityDelay <= 0 && !planted) {
 				applyGravity();
 			}
 
@@ -104,15 +105,15 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	public void groundCollision(final MoveBlocker platform) {
-		// Collision with the ground
-		this.getPosition().y = platform.getBoundingBox().y - this.getBoundingBox().height;
 		velocity_y = 0;
 		velocity_x = 0;
 		setMoving(false);
+		planted = true;
 	}
 
 	public void setMoving(final boolean isMoving) {
 		this.isMoving = isMoving;
+		planted = false;
 		if (!isMoving) {
 			velocity_x = 0;
 			gravityDelay = 0;
