@@ -13,8 +13,8 @@ import nidhogglike.entities.Ground;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
-import nidhogglike.surprise.SurpriseGift;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
 	/**

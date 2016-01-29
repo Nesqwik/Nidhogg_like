@@ -30,7 +30,6 @@ import nidhogglike.particles.behaviors.MovingParticle;
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
 import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
 
 
 /**
@@ -262,6 +261,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 		recoverSwordIfNeeded();
 		addGift();
+		this.surpriseGift.reduceTime();
 	}
 
 	protected void recoverSwordIfNeeded() {
@@ -279,11 +279,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		int score = this.data.getObservableValue(observableDataKey).getValue();
 		if (score % 10 == 5) {
 			int alea = 50 + (int)(Math.random()*400);
-			Gift gift = new Gift(alea);
-			this.surpriseGift.setGift(gift);
+			this.surpriseGift.setGift(alea);
 			this.surpriseGift.setCanDraw(true);
 			this.surpriseGift.appear();
 		}
+
 	}
 
 	public void refinePositionAfterLateralCollision(final ObjectWithBoundedBox collisioner) {
@@ -323,6 +323,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	
 
 	public void increaseScore(int add) {
+		System.out.println("add life");
 		this.data.getScore().setValue(this.data.getScore().getValue() + add);
 	}
 

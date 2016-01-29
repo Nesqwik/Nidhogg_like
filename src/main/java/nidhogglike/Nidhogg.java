@@ -10,6 +10,7 @@ import gameframework.gui.GameWindow;
 import nidhogglike.entities.Ground;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
@@ -17,7 +18,6 @@ import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
 
 import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
 
 
 /**
@@ -85,7 +85,6 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		}
 		
 		SurpriseGift surprise = new SurpriseGift(data);
-		surprise.setGift(new Gift(200));
 		
 		j1.setSurpriseGift(surprise);
 		j2.setSurpriseGift(surprise);
