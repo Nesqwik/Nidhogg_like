@@ -14,6 +14,7 @@ import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
+import nidhogglike.surprise.SurpriseGift;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
 	/**
@@ -114,5 +115,20 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 
 	public MoveBlocker getLastBlockingBlocker() {
 		return lastBlockingBlocker;
+	}
+	public void moveBlockerRule(SurpriseGift s, Ground ground)
+			throws IllegalMoveException {
+		s.groundCollision(ground);
+	}
+	
+	public void moveBlockerRule(SurpriseGift s, Platform p)
+			throws IllegalMoveException {
+		final int py = p.getBoundingBox().y + p.getBoundingBox().height;
+		
+		if (s.getPosition().y <= py) {
+			s.getPosition().y = p.getBoundingBox().y - s.getBoundingBox().height;
+		}
+		
+		s.groundCollision(p);
 	}
 }
