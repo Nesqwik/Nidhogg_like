@@ -44,7 +44,12 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected static final int DEFAULT_SPEED = 8;
 	protected static final int DUCKING_SPEED = 3;
 	protected float velocity_y;
+	protected float fakeVelocity_x;
+	
+	private static float ACCELERATION = 0.5f;
 	private static float VELOCITY_Y_MAX = 10;
+	private static float VELOCITY_X_MAX = 15;
+
 	private static float GRAVITY = 1f;
 	private static int JUMP_HEIGHT = 10;
 	private boolean jumping;
@@ -205,8 +210,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected void updateDirection() {
 		if (speedVector.getDirection().x != 0) {
 			headingLeft = speedVector.getDirection().x < 0;
-
+			fakeVelocity_x += ACCELERATION;
+			fakeVelocity_x = Math.min(fakeVelocity_x, VELOCITY_X_MAX);
 			sprite.setType(spriteTypePrefix + (headingLeft ? "Left" : "Right"));
+		} else {
+			fakeVelocity_x = 0;
 		}
 	}
 
@@ -311,6 +319,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public float getVelocityY() {
 		return velocity_y;
+	}
+	
+	public float getFakeVelocityX() {
+		return fakeVelocity_x;
 	}
 
 	public void setParticleEmitter(final ParticleEmitter emitter) {

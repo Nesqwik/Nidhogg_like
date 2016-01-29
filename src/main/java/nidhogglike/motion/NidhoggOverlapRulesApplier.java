@@ -44,12 +44,12 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 
 	public void overlapRule(final Sword s1, final Sword s2) {
 		if (s1.isHeld() && s2.isHeld()) {
-			if (!s1.getHolder().isJumping()) {
-				s1.getHolder().pushBackwards();
-			}
-			if (!s2.getHolder().isJumping()) {
-				s2.getHolder().pushBackwards();
-			}
+			s2.getHolder().pushBackwards();
+			s1.getHolder().pushBackwards();
+		} else if(s1.isHeld() && s2.isMoving()) {
+			s2.setVelocity_x(-2);
+		} else if(s2.isHeld() && s1.isMoving()) {
+			s1.setVelocity_x(-2);
 		}
 	}
 	
