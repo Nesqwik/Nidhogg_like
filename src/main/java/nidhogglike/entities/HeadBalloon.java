@@ -29,6 +29,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		setPosition(new Point(x, y));
 		velocity_x = getRandomSpeed(-10, 10);
 		velocity_y = getRandomSpeed(-10, 10);
+		
 		this.data = data;
 		this.color = color;
 	}
@@ -63,7 +64,7 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		}
 		
 		
-		// When the player goes out of bounds
+		// When the ball goes out of bounds
 		if(this.getPosition().x > Nidhogg.WIDTH) {
 			this.getPosition().x = -this.getBoundingBox().width;
 
