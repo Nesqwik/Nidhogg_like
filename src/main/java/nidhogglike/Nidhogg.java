@@ -11,14 +11,14 @@ import nidhogglike.entities.Ground;
 import nidhogglike.entities.LifeBar;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
 
-import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
+
 
 
 /**
@@ -85,13 +85,13 @@ public class Nidhogg extends GameLevelDefaultImpl {
 			addSmallPlatforms();
 		}
 		
-//		SurpriseGift surprise = new SurpriseGift(data);
-//		surprise.setGift(new Gift(200));
-//		
-//		j1.setSurpriseGift(surprise);
-//		j2.setSurpriseGift(surprise);
-//		
-//		universe.addGameEntity(surprise);
+
+		SurpriseGift surprise = new SurpriseGift(data);
+		
+		j1.setSurpriseGift(surprise);
+		j2.setSurpriseGift(surprise);
+		
+		universe.addGameEntity(surprise);
 		universe.addGameEntity(emitter);
 		universe.addGameEntity(new LifeBar(5, j1));
 		universe.addGameEntity(new LifeBar(5, j2));

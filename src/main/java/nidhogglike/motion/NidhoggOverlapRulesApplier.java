@@ -2,9 +2,9 @@ package nidhogglike.motion;
 
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
 import nidhogglike.game.NidhoggAnnouncer;
-import nidhogglike.surprise.SurpriseGift;
 import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
@@ -63,8 +63,8 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 	}
 	
 	public void overlapRule(SurpriseGift s, Player player) {
-		if (s.getHolder() != player) {
-			player.isTakingGift(s);
+		if (!s.isOpened()) {
+			s.setHolder(player);
 		}
 	}
 	
