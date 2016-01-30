@@ -43,6 +43,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected static final int HITBOX_HEIGHT = 50;
 	protected static final int DEFAULT_SPEED = 8;
 	protected static final int DUCKING_SPEED = 3;
+	protected static final int LIFE = 3;
 	protected float velocity_y;
 	protected float fakeVelocity_x;
 	
@@ -72,9 +73,14 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private ParticleBehavior dyingParticleBehavior;
 	private Color color;
 	private SurpriseGift surpriseGift;
+	private int maxLife;
+	private int currentLife;
+	private int invulnerabilityTime;
 
 	public Player(final NidhoggGameData data, final Input input, final boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
+		this.maxLife = this.currentLife = LIFE;
+		invulnerabilityTime = 0;
 		if (isPlayer1) {
 			color = new Color(255, 160, 64);
 			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
@@ -134,6 +140,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
+		if (invulnerabilityTime > 0) {
+			--invulnerabilityTime;
+		}
+		
 		if (input.isPressed(jumpKey) && jumpHeight < JUMP_HEIGHT) {
 			velocity_y = -10;
 			jumping = true;
@@ -232,7 +242,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public void draw(final Graphics g) {
-		sprite.draw(g, position);
+		if (invulnerabilityTime % 4 == 0) {
+			sprite.draw(g, position);
+		}
 	}
 	
 	public void setSurpriseGift(SurpriseGift sg) {
@@ -255,11 +267,34 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public boolean isHeadingLeft() {
 		return headingLeft;
 	}
-
-	public void die() {
+	
+	public void emitParticle() {
 		// Particles
 		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width / 2,
 				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
+	}
+	
+	public boolean hit() {
+		if (invulnerabilityTime > 0) {
+			return false;
+		}
+		
+		emitParticle();
+		
+		currentLife -= 1;
+		if (currentLife <= 0) {
+			die();
+			return true;
+		} else {
+			invulnerabilityTime = 60;
+		}
+		return false;
+	}
+
+	public void die() {
+		if (invulnerabilityTime > 0) {
+			return;
+		}
 
 		// Head
 		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, color));
@@ -267,6 +302,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
 		resetPosition();
+		this.currentLife = this.maxLife;
 
 		recoverSwordIfNeeded();
 //		addGift();
@@ -365,4 +401,22 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public boolean isJumping() {
 		return jumping;
 	}
+
+	public int getMaxLife() {
+		return maxLife;
+	}
+
+	public void setMaxLife(int maxLife) {
+		this.maxLife = maxLife;
+	}
+
+	public int getCurrentLife() {
+		return currentLife;
+	}
+
+	public void setCurrentLife(int currentLife) {
+		this.currentLife = currentLife;
+	}
+	
+	
 }
