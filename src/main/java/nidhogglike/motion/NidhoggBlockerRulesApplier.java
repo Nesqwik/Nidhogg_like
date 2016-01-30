@@ -13,6 +13,7 @@ import nidhogglike.entities.Ground;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
@@ -120,5 +121,17 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 
 	public MoveBlocker getLastBlockingBlocker() {
 		return lastBlockingBlocker;
+	}
+	
+	public void moveBlockerRule(SurpriseGift s, Ground ground)
+			throws IllegalMoveException {
+		s.groundCollision(ground);
+	}
+	
+	public void moveBlockerRule(SurpriseGift s, Platform p)
+			throws IllegalMoveException {
+		
+		s.setMoving(false);
+		s.groundCollision(p); 
 	}
 }

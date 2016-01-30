@@ -29,8 +29,7 @@ import nidhogglike.particles.behaviors.GravityParticle;
 import nidhogglike.particles.behaviors.MovingParticle;
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
-import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
+
 
 
 /**
@@ -235,8 +234,13 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		sprite.draw(g, position);
 	}
 	
-	public void setSurpriseGift(SurpriseGift sg) {
-		this.surpriseGift = sg;
+	/**
+	 * Set a surprise gift to the player
+	 * 
+	 * @param surpriseGift the surprise gift
+	 */
+	public void setSurpriseGift(SurpriseGift surpriseGift) {
+		this.surpriseGift = surpriseGift;
 	}
 
 	public boolean isHoldingSword() {
@@ -269,7 +273,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		resetPosition();
 
 		recoverSwordIfNeeded();
-//		addGift();
+
+		//For the SurpriseGift
+		addGift();
+		this.surpriseGift.reduceTime();
 	}
 
 	protected void recoverSwordIfNeeded() {
@@ -283,15 +290,16 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		
 	}
 
+	/**
+	 * Add a new gift in the SurpriseGift, it appears with a random coordinate
+	 */
 	protected void addGift() {
 		int score = this.data.getObservableValue(observableDataKey).getValue();
-		if (score % 10 == 5) {
+		if (score % 6 == 5) {
 			int alea = 50 + (int)(Math.random()*400);
-			Gift gift = new Gift(alea);
-			this.surpriseGift.setGift(gift);
-			this.surpriseGift.setCanDraw(true);
-			this.surpriseGift.appear();
+			this.surpriseGift.setGift(alea, this);
 		}
+
 	}
 
 	public void refinePositionAfterLateralCollision(final ObjectWithBoundedBox collisioner) {
@@ -334,10 +342,24 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 	
 
-	public void increaseScore(int add) {
-		this.data.getScore().setValue(this.data.getScore().getValue() + add);
+	/**
+	 * Modification of the score
+	 * 
+	 * @param number the number that you want add, it can be negative
+	 */
+	public void modificationScore(int number) {
+		int score = this.data.getObservableValue(observableDataKey).getValue() + number;
+		if (score < 0) {
+			score = 0;
+		} 
+		this.data.getObservableValue(observableDataKey).setValue(score);
 	}
 
+	/**
+	 * The player is taking the Surprise Gift
+	 * 
+	 * @param s the SurpriseGift
+	 */
 	public void isTakingGift(SurpriseGift s) {
 		s.takingGift(this);
 	}
