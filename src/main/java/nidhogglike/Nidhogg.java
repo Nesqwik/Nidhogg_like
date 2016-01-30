@@ -84,6 +84,7 @@ public class Nidhogg extends GameLevelDefaultImpl {
 			addSmallPlatforms();
 		}
 		
+
 		SurpriseGift surprise = new SurpriseGift(data);
 		
 		j1.setSurpriseGift(surprise);
