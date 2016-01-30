@@ -288,8 +288,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		int score = this.data.getObservableValue(observableDataKey).getValue();
 		if (score % 6 == 5) {
 			int alea = 50 + (int)(Math.random()*400);
-			this.surpriseGift.setGift(alea);
-			this.surpriseGift.appear();
+			this.surpriseGift.setGift(alea, this);
 		}
 
 	}
@@ -349,7 +348,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	 * @param s the SurpriseGift
 	 */
 	public void isTakingGift(SurpriseGift s) {
-		s.takingGift();
+		s.takingGift(this);
 	}
 
 	public boolean isKilledBy(final Player killer) {

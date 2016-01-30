@@ -31,7 +31,6 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	private SpriteManager sprite;
 	@SuppressWarnings("unused")
 	private int gravityDelay;
-	private Player holder;
 	private float velocity_y;
 	private boolean isMoving;
 	private int timeToLive;
@@ -39,6 +38,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	private boolean setTypeResponse;
 	private boolean isOnGround;
 	private int timeToOpen;
+	private boolean isGood;
 	
 
 	/**
@@ -57,7 +57,6 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		this.isOnGround = false;
 		this.timeToLive = TIME;
 		isOpen= true;
-		this.holder = null;
 	}
 
 
@@ -82,6 +81,9 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 			sprite.draw(g, position);
 			timeToOpen++;
 		}
+		if (timeToOpen-1 == DELAYGIFTOPEN) {
+			
+		}
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 * 
 	 * @param x the coordinate for x (in abscissa)
 	 */
-	public void setGift(int x) {
+	public void setGift(int x, Player player) {
 		this.setTypeResponse = false;
 		this.timeToOpen = 0;
 		this.getPosition().x = x;
@@ -97,7 +99,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		this.timeToLive = TIME;
 		isOpen = false;
 		sprite.setType("gift");
-		this.holder = null;
+		appear();
 	}
 
 	/**
@@ -106,14 +108,19 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 * 
 	 * @param player who take the gift
 	 */
-	private void giveAnswer() {
+	private void giveAnswer(Player player) {
 		setTypeResponse = true;
 		sprite.setType("answer");
 		if (Math.random() < 0.5) {
-			this.sprite.increment();
-			this.holder.modificationScore((-1) * POINT_LIFE_MODIFICATION);
+			if (!isGood) {
+				this.sprite.increment();
+			}
+			isGood = true;
+			player.modificationScore((-1) * POINT_LIFE_MODIFICATION);
 		} else {
-			this.holder.modificationScore(POINT_LIFE_MODIFICATION);
+			isGood = false;
+			this.sprite.setIncrement(0);
+			player.modificationScore(POINT_LIFE_MODIFICATION);
 		}
 	}
 
@@ -195,10 +202,10 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 * 
 	 * @param player who take the gift
 	 */
-	public void takingGift() {
+	public void takingGift(Player player) {
 		if (!isOpened()) {
 			this.isOpen = true;
-			giveAnswer();
+			giveAnswer(player);
 		}
 	}
 
@@ -217,12 +224,8 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	}
 	
 	public void setHolder(Player player) {
-		this.holder = player;
 		player.isTakingGift(this);
 	}
-	
-	public Player getHolder() {
-		return this.holder;
-	}
+
 
 }
