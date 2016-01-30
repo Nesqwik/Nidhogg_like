@@ -54,8 +54,11 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 	}
 	
 	public void overlapRule(SurpriseGift s, Player player) {
-		if (s.getHolder() != player) {
+		if (s.getHolder() == player) {
 			player.isTakingGift(s);
+		}
+		if (!s.isOpened()) {
+			s.setHolder(player);
 		}
 	}
 	

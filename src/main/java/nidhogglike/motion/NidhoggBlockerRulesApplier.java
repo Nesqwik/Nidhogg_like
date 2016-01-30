@@ -124,9 +124,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(SurpriseGift s, Platform p)
 			throws IllegalMoveException {
 		
-		if (!s.getGift().isOpened()) {
-			s.setMoving(false);
-			s.groundCollision(p);
-		} 
+		s.setMoving(false);
+		s.groundCollision(p); 
 	}
 }

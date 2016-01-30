@@ -1,6 +1,5 @@
 package nidhogglike.game;
 
-import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
 import nidhogglike.motion.NidhoggBlockerRulesApplier;
 import nidhogglike.motion.NidhoggMovable;

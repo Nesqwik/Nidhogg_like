@@ -17,7 +17,6 @@ import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
 
-import nidhogglike.surprise.Gift;
 
 
 /**
