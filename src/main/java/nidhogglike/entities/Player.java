@@ -390,7 +390,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				this.currentLife = 3;
 				if (score >= 0) {
 					this.data.getObservableValue(observableDataKey).setValue(score);
-					this.currentLife = 2;
+					this.currentLife = 1;
 				}
 			} else {
 				this.currentLife++;
