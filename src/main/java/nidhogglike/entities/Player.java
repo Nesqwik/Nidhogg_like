@@ -406,15 +406,6 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
-	/**
-	 * The player is taking the Surprise Gift
-	 * 
-	 * @param s the SurpriseGift
-	 */
-	public void isTakingGift(SurpriseGift s) {
-		s.takingGift(this);
-	}
-
 	public boolean isKilledBy(final Player killer) {
 		final boolean goOppositeDirection = killer.isHeadingLeft() != this.isHeadingLeft();
 
