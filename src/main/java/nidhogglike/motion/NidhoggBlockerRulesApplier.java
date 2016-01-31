@@ -46,14 +46,9 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	}
 	public void moveBlockerRule(final HeadBalloon b, final Platform platform)
 			throws IllegalMoveException {
-
-		if (Math.abs(b.getVelocityY()) > Math.abs(b.getVelocityX())) {
-			b.platformCollision(platform);
-			throw new IllegalMoveException();
-		} else {
-			b.LateralCollision(platform);
-			throw new IllegalMoveException();
-		}
+		
+		b.handleCollision(platform);
+		throw new IllegalMoveException();
 	}
 
 	public void moveBlockerRule(final HeadBalloon b, final Ground ground)

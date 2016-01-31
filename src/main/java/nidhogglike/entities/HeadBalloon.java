@@ -119,10 +119,28 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		}
 	}
 
-	public void LateralCollision(Platform platform) {
-		this.getPosition().x -= velocity_x;
-		energyLossesX();
-		velocity_x = - velocity_x;
+	public void handleCollision(Platform platform) {
+		// There's 4 possibilities for the new position of the ball, at the left, the right, the top or the bottom of the platform
+		int newX1 = platform.getBoundingBox().x - getBoundingBox().width;
+		int newX2 = platform.getBoundingBox().x + platform.getBoundingBox().width;
+		int newY1 = platform.getBoundingBox().y - getBoundingBox().height;
+		int newY2 = platform.getBoundingBox().y + platform.getBoundingBox().height;
+		
+		// We choose the one that is the nearest to the ball's actual position
+		int deltaX1 = (int) Math.abs(this.getPosition().x  - newX1 - velocity_x);
+		int deltaX2 = (int) Math.abs(this.getPosition().x  - newX2  - velocity_x);
+		int deltaY1 = (int) Math.abs(this.getPosition().y  - newY1 - velocity_y);
+		int deltaY2 = (int) Math.abs(this.getPosition().y  - newY2 - velocity_y);
+		
+		if (Math.min(deltaY1, deltaY2) < Math.min(deltaX1, deltaX2)) {
+			this.getPosition().y = deltaY1 < deltaY2 ? newY1 : newY2;
+			energyLossesY();
+			velocity_y = - velocity_y;
+		} else {
+			this.getPosition().x = deltaX1 < deltaX2 ? newX1 : newX2;
+			energyLossesX();
+			velocity_x = - velocity_x;
+		}
 	}
 	
 	private void decrementTTL() {
@@ -145,8 +163,8 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 			float speed = (player.isDucking() ? 0.5f : 1f);
 			speed *= (player.getFakeVelocityX() + 1);
 			velocity_x = (player.isHeadingLeft() ? -speed : speed);
-			velocity_y = getRandomSpeed(20, 27);
-			timeBeforeShot = 90f;
+			velocity_y = player.getFakeVelocityX() == 0 ? 0 :  getRandomSpeed(20, 27);
+			timeBeforeShot = 20f;
 		}
 	}
 }
