@@ -331,7 +331,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	 */
 	protected void addGift() {
 		int score = this.data.getObservableValue(observableDataKey).getValue();
-		if (score % 6 == 5) {
+		if (score % 3 == 2) {
 			int alea = 50 + (int)(Math.random()*400);
 			this.surpriseGift.setGift(alea, this);
 		}
@@ -384,11 +384,26 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	 * @param number the number that you want add, it can be negative
 	 */
 	public void modificationScore(int number) {
-		int score = this.data.getObservableValue(observableDataKey).getValue() + number;
-		if (score < 0) {
-			score = 0;
-		} 
-		this.data.getObservableValue(observableDataKey).setValue(score);
+		if (number > 0) {
+			if (this.currentLife == 3) {
+				int score = this.data.getObservableValue(observableDataKey).getValue() - 1;
+				this.currentLife = 3;
+				if (score >= 0) {
+					this.data.getObservableValue(observableDataKey).setValue(score);
+					this.currentLife = 1;
+				}
+			} else {
+				this.currentLife++;
+			}
+		} else {
+			if (this.currentLife == 1) {
+				int score = this.data.getObservableValue(observableDataKey).getValue() + 1;
+				this.data.getObservableValue(observableDataKey).setValue(score);
+				this.currentLife = 3;
+			} else {
+				this.currentLife--;
+			}
+		}
 	}
 
 	/**
