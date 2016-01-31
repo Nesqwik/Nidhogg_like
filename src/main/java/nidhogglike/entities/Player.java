@@ -70,7 +70,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private Point respawnPosition;
 	private ParticleEmitter particleEmitter;
 	private ParticleBehavior dyingParticleBehavior;
-	private Color color;
+	private Color color, headColor;
 	private SurpriseGift surpriseGift;
 	private int maxLife;
 	private int currentLife;
@@ -81,13 +81,15 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		this.maxLife = this.currentLife = LIFE;
 		invulnerabilityTime = 0;
 		if (isPlayer1) {
-			color = new Color(255, 160, 64);
+			color = new Color(223, 153, 65);
+			headColor = new Color(239, 117, 44);
 			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
 					KeyEvent.VK_D, KeyEvent.VK_A, input, data, "/images/player1.png");
 			headingLeft = false;
 			sprite.setType("headingRight");
 		} else {
 			color = new Color(145, 63, 160);
+			headColor = new Color(75, 39, 135);
 			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(Nidhogg.WIDTH - 125, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
 					KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
@@ -301,7 +303,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 
 		// Head
-		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, color));
+		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, headColor));
 
 		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
