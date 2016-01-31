@@ -16,17 +16,17 @@ import gameframework.motion.GameMovableDriverDefaultImpl;
 import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
-
 import nidhogglike.Nidhogg;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
 import nidhogglike.input.Input;
 import nidhogglike.motion.NidhoggMovable;
 import nidhogglike.particles.ParticleEmitter;
-import nidhogglike.particles.behaviors.DelayedParticle;
-import nidhogglike.particles.behaviors.DyingParticle;
-import nidhogglike.particles.behaviors.GravityParticle;
-import nidhogglike.particles.behaviors.MovingParticle;
+import nidhogglike.particles.behaviors.DefaultParticleBehavior;
+import nidhogglike.particles.behaviors.DelayedParticleBehavior;
+import nidhogglike.particles.behaviors.DyingParticleBehavior;
+import nidhogglike.particles.behaviors.GravityParticleBehavior;
+import nidhogglike.particles.behaviors.MovingParticleBehavior;
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
 
@@ -373,10 +373,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void setParticleEmitter(final ParticleEmitter emitter) {
 		this.particleEmitter = emitter;
-		dyingParticleBehavior = new MovingParticle(null, 7, -Math.PI * 6 / 10, -Math.PI * 4 / 10);
-		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
-		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
-		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
+		dyingParticleBehavior = new DefaultParticleBehavior();
+		dyingParticleBehavior = new MovingParticleBehavior(dyingParticleBehavior, 7, -Math.PI * 6 / 10, -Math.PI * 4 / 10);
+		dyingParticleBehavior = new DyingParticleBehavior(dyingParticleBehavior, 300, false);
+		dyingParticleBehavior = new GravityParticleBehavior(dyingParticleBehavior, 100f / 1000, 250f / 1000);
+		dyingParticleBehavior = new DelayedParticleBehavior(dyingParticleBehavior, 2);
 	}
 	
 

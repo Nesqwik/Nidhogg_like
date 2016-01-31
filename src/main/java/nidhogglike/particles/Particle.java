@@ -4,16 +4,28 @@ import java.awt.Color;
 
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
+/**
+ * Stores every useful information about a single particle
+ * like it's position on the screen, it's color...
+ */
 public class Particle {
 	protected double x;
 	protected double y;
-	protected double velocity_y;
+	protected double velocityY;
 	protected int timeAlive;
 	protected Color color;
 	protected double randomness;
 	protected int id;
 	protected ParticleBehavior behavior;
 	
+	/**
+	 * Constructor
+	 * @param color Color of the particle
+	 * @param id Id of the particle
+	 * @param x Initial x position of the particle on the screen
+	 * @param y Initial y position of the particle on the screen
+	 * @param behavior Behavior used to update the particle
+	 */
 	public Particle(Color color, int id, int x, int y, ParticleBehavior behavior) {
 		this.x = x;
 		this.y = y;
@@ -24,7 +36,7 @@ public class Particle {
 	}
 	
 	/**
-	 * @return the x
+	 * @return the x position on the screen of the particle
 	 */
 	public double getX() {
 		return x;
@@ -36,7 +48,7 @@ public class Particle {
 		this.x = x;
 	}
 	/**
-	 * @return the y
+	 * @return the y position on the screen of the particle
 	 */
 	public double getY() {
 		return y;
@@ -48,7 +60,7 @@ public class Particle {
 		this.y = y;
 	}
 	/**
-	 * @return the timeAlive
+	 * @return the timeAlive of the particle
 	 */
 	public int getTimeAlive() {
 		return timeAlive;
@@ -60,7 +72,7 @@ public class Particle {
 		this.timeAlive = timeAlive;
 	}
 	/**
-	 * @return the color
+	 * @return the color of the particle
 	 */
 	public Color getColor() {
 		return color;
@@ -71,19 +83,14 @@ public class Particle {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
 	/**
 	 * @return the behavior
 	 */
 	public ParticleBehavior getBehavior() {
 		return behavior;
 	}
-	/**
-	 * @param behavior the behavior to set
-	 */
-	public void setBehavior(ParticleBehavior behavior) {
-		this.behavior = behavior;
-	}
-
+	
 	/**
 	 * @return the randomness
 	 */
@@ -92,32 +99,23 @@ public class Particle {
 	}
 
 	/**
-	 * @return the id
-	 */
+	 * @return the id of the particle
+	 */ 
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the velocityY of the particle
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public double getVelocityY() {
+		return velocityY;
 	}
 
 	/**
-	 * @return the velocity_y
+	 * @param velocityY the velocityY to set
 	 */
-	public double getVelocity_y() {
-		return velocity_y;
+	public void setVelocityY(double velocityY) {
+		this.velocityY = velocityY;
 	}
-
-	/**
-	 * @param velocity_y the velocity_y to set
-	 */
-	public void setVelocity_y(double velocity_y) {
-		this.velocity_y = velocity_y;
-	}
-	
-	
 }
