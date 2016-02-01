@@ -54,6 +54,18 @@ public class ParticleEmitter implements GameEntity {
 	}
 	
 	/**
+	 * Draw a single particle on a Graphics
+	 * @param p The particle to draw
+	 * @param g The Graphics
+	 */
+	public void drawParticle(Particle p, Graphics g) {
+		if (p.getBehavior().isDrawn(p)) {
+			g.setColor(p.getColor());
+			g.fillRect((int) p.getX(), (int) p.getY(), p.getWidth(), p.getHeight());
+		}
+	}
+	
+	/**
 	 * Draw every particles that are still alive
 	 * @see gameframework.game.GameEntity#draw(java.awt.Graphics)
 	 */
@@ -61,10 +73,7 @@ public class ParticleEmitter implements GameEntity {
 	public void draw(Graphics g) {
 		for (Particle p : particles) {
 			update(p);
-			if (p.getBehavior().isDrawn(p)) {
-				g.setColor(p.getColor());
-				g.fillRect((int) p.getX(), (int) p.getY(), p.getWidth(), p.getHeight());
-			}
+			drawParticle(p, g);
 		}
 		
 		// We remove the particles after the loop to avoid concurrent modifications
@@ -80,7 +89,7 @@ public class ParticleEmitter implements GameEntity {
 	 * @param behavior Behavior of these newly created particles
 	 */
 	public void emit(Color color, Rectangle rectangle, int nb, ParticleBehavior behavior) {
-		for (; nb >= 0; --nb) {
+		for (; nb > 0; --nb) {
 			particles.add(new Particle(nb, color, rectangle, behavior));
 		}
 	}
