@@ -55,10 +55,11 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	 */
 	@Override
 	protected void init() {
-		final Input input = new Input(data.getCanvas());
-		this.gameBoard = new NidhoggUniverseViewPort();
-		this.gameBoard.setGameData(data);
 		final ParticleEmitter emitter = new ParticleEmitter();
+		final Input input = new Input(data.getCanvas());
+		this.gameBoard = new NidhoggUniverseViewPort(emitter);
+		this.gameBoard.setGameData(data);
+		
 
 		final Player j1 = new Player((NidhoggGameData) data, input, true);
 		final Player j2 = new Player((NidhoggGameData) data, input, false);
