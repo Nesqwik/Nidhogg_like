@@ -38,19 +38,6 @@ public class SurpriseGiftTest {
 	public void testIsMovable() {
 		assertTrue(gift.isMovable());
 	}
-
-	@Test
-	public void testTakingGiftWithSimpleLifeBar() {
-		gift.setGift(0, player);
-		player.setCurrentLife(2);
-		gift.takingGift(player);
-		assertNotEquals(2, player.getCurrentLife());
-		if (gift.isGood()) {
-			assertEquals(3, player.getCurrentLife());
-		} else {
-			assertEquals(1, player.getCurrentLife());
-		}
-	}
 	
 	@Test
 	public void testTakingGiftWithSimpleCompleteLifeBarAndZeroScore() {
@@ -82,6 +69,7 @@ public class SurpriseGiftTest {
 		testGift(scoreValue, score, currentLife, player);
 	}
 
+	//Because of the alea number
 	protected void testGift(int scoreBefore, int score, int lifeBarBefore, Player player) {
 		if (gift.isGood()) {
 			if (lifeBarBefore < 3) {
