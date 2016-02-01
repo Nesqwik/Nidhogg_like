@@ -6,6 +6,7 @@ import java.util.List;
 
 import gameframework.assets.Sound;
 import nidhogglike.entities.Player;
+import nidhogglike.entities.Sword;
 
 public class NidhoggAnnouncer {
 
@@ -48,7 +49,16 @@ public class NidhoggAnnouncer {
 		killSounds.put(60, "/sounds/announcer/holyshit.wav");
 	}
 
-	public void registerKill(Player killer) {
+	public void handleKill(Player killee, Sword sword) {
+		registerKill(inferKiller(sword));
+		registerDeath(killee);
+	}
+
+	protected Player inferKiller(Sword sword) {
+		return sword.getHolder() != null ? sword.getHolder() : sword.getLastHolder();
+	}
+
+	protected void registerKill(Player killer) {
 		int pos = players.indexOf(killer);
 
 		if (!firstBlood) {
@@ -62,7 +72,7 @@ public class NidhoggAnnouncer {
 		playSound(killSounds.get(kills.get(pos)));
 	}
 
-	public void registerDeath(Player killee) { // haha
+	protected void registerDeath(Player killee) { // haha
 		int pos = players.indexOf(killee);
 
 		if (killingSprees.get(pos) >= PAYBACK_THRESHOLD) {
