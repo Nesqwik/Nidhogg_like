@@ -26,6 +26,6 @@ public class DelayedParticleBehavior extends ParticleBehavior {
 	 */
 	@Override
 	public boolean isDrawn(Particle p) {
-		return p.getTimeAlive() > p.getId() * delay;
+		return p.getTimeAlive() >= p.getId() * delay;
 	}
 }
