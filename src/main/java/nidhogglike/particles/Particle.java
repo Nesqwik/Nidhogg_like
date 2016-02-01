@@ -1,12 +1,13 @@
 package nidhogglike.particles;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
 /**
  * Stores every useful information about a single particle
- * like it's position on the screen, it's color...
+ * like its position on the screen, its color...
  */
 public class Particle {
 	protected double x;
@@ -16,23 +17,40 @@ public class Particle {
 	protected Color color;
 	protected double randomness;
 	protected int id;
+	protected int width;
+	protected int height;
 	protected ParticleBehavior behavior;
 	
 	/**
 	 * Constructor
-	 * @param color Color of the particle
 	 * @param id Id of the particle
+	 * @param color Color of the particle
 	 * @param x Initial x position of the particle on the screen
 	 * @param y Initial y position of the particle on the screen
+	 * @param width Initial width of the particle on the screen
+	 * @param height Initial height of the particle on the screen
 	 * @param behavior Behavior used to update the particle
 	 */
-	public Particle(Color color, int id, int x, int y, ParticleBehavior behavior) {
+	public Particle(int id, Color color, int x, int y, int width, int height, ParticleBehavior behavior) {
 		this.x = x;
 		this.y = y;
+		this.width = width;
+		this.height = height;
 		this.behavior = behavior;
 		this.randomness = Math.random();
 		this.color = color;
 		this.id = id;
+	}
+	
+	/**
+	 * Constructor
+	 * @param id Id of the particle
+	 * @param color Color of the particle
+	 * @param rectangle Rectangle defining the initial size and position of the particle
+	 * @param behavior Behavior used to update the particle
+	 */
+	public Particle(int id, Color color, Rectangle rectangle, ParticleBehavior behavior) {
+		this(id, color, rectangle.x, rectangle.y, rectangle.width, rectangle.height, behavior);
 	}
 	
 	/**
@@ -117,5 +135,33 @@ public class Particle {
 	 */
 	public void setVelocityY(double velocityY) {
 		this.velocityY = velocityY;
+	}
+
+	/**
+	 * @return the width of the particle
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * @return the height of the particle
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(int height) {
+		this.height = height;
 	}
 }

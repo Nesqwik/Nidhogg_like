@@ -2,6 +2,7 @@ package nidhogglike.particles;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ParticleEmitter implements GameEntity {
 			update(p);
 			if (p.getBehavior().isDrawn(p)) {
 				g.setColor(p.getColor());
-				g.fillRect((int) p.getX(), (int) p.getY(), 5, 5);
+				g.fillRect((int) p.getX(), (int) p.getY(), p.getWidth(), p.getHeight());
 			}
 		}
 		
@@ -74,14 +75,13 @@ public class ParticleEmitter implements GameEntity {
 	 * Emits a certain amount of particles that will react
 	 * according to the specified behavior
 	 * @param color Color of these particle
-	 * @param x X position on the screen of these particles
-	 * @param y Y position on the screen of these particles
+	 * @param rectangle Rectangle defining the initial position and size of the particles to emit
 	 * @param nb Number of particles to emit
 	 * @param behavior Behavior of these newly created particles
 	 */
-	public void emit(Color color, int x, int y, int nb, ParticleBehavior behavior) {
+	public void emit(Color color, Rectangle rectangle, int nb, ParticleBehavior behavior) {
 		for (; nb >= 0; --nb) {
-			particles.add(new Particle(color, nb, x, y, behavior));
+			particles.add(new Particle(nb, color, rectangle, behavior));
 		}
 	}
 

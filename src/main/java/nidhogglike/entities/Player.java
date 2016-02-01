@@ -276,8 +276,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	
 	public void emitParticle() {
 		// Particles
-		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width / 2,
-				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
+		Rectangle rect = new Rectangle(this.getPosition().x + this.getBoundingBox().width / 2,
+				this.getPosition().y + this.getBoundingBox().height / 2, 7, 7);
+		
+		particleEmitter.emit(color, rect, 20, dyingParticleBehavior);
 	}
 	
 	public boolean hit() {
