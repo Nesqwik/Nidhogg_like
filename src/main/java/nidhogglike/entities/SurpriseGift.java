@@ -281,6 +281,9 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		return isOpen;
 	}
 
+	/**
+	 * @return true if the gift is on ground else false
+	 */
 	public boolean isOnGround() {
 		return isOnGround;
 	}
