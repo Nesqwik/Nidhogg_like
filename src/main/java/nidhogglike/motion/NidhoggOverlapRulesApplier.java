@@ -33,8 +33,8 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			mustHit = false;
 		
 		boolean mustKill = false;
-		
-		if ((sword.getHolder() != null) && (sword.getHolder().getStrongerSword() > 0)) {
+
+		if ((sword.getHolder() != null) && (sword.getHolder().getStrongerSword() > 0) && (player != sword.getHolder())) {
 			player.emitParticle();
 			player.die();
 			mustKill = true;
@@ -43,7 +43,6 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			player.setCurrentLife(3);
 			return;
 		}
-
 		
 		if (mustHit) {
 			if (!sword.isHeld()) {
