@@ -17,11 +17,10 @@ public class NidhoggUniverseTest {
 	
 	@Before
 	public void init() {
-		universe = new NidhoggUniverse();
 		NidhoggConfiguration config = new NidhoggConfiguration(0, 0, 0, 0);
 		data = new NidhoggGameData(config);
+		universe = new NidhoggUniverse(data);
 		sword = new Sword(data, true);
-		universe.setGameData(data);
 	}
 	
 	@Test

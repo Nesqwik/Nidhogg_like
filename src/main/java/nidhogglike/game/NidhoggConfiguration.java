@@ -1,6 +1,7 @@
 package nidhogglike.game;
 
 import gameframework.game.GameConfiguration;
+import gameframework.game.GameData;
 import gameframework.game.GameUniverse;
 import gameframework.motion.blocking.MoveBlockerRulesApplier;
 import gameframework.motion.overlapping.OverlapRulesApplier;
@@ -21,8 +22,8 @@ public class NidhoggConfiguration extends GameConfiguration {
 	}
 
 	@Override
-	public GameUniverse createUniverse() {
-		return new NidhoggUniverse();
+	public GameUniverse createUniverse(GameData gameData) {
+		return new NidhoggUniverse(gameData);
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.game.GameUniverseDefaultImpl;
 import gameframework.motion.GameMovable;
@@ -15,6 +17,10 @@ import gameframework.motion.SpeedVector;
 
 public class NidhoggUniverse extends GameUniverseDefaultImpl {
 	
+	public NidhoggUniverse(GameData gameData) {
+		super(gameData);
+	}
+
 	protected List<Sword> swords = new ArrayList<>();
 	
 	@Override

@@ -1,12 +1,12 @@
 package nidhogglike.motion;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.awt.Color;
 import java.awt.Point;
 
 import nidhogglike.Nidhogg;
-import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
@@ -28,7 +28,6 @@ public class NidhoggOverlapRulesApplierTest {
 	private Player player2;
 	private SurpriseGift surpriseGift;
 	private Sword sword2;
-	private HeadBalloon headBalloon;
 
 	@Before
 	public void init() {
@@ -41,7 +40,6 @@ public class NidhoggOverlapRulesApplierTest {
 		player.setParticleEmitter(new ParticleEmitter());
 		player2 = new Player(data, new Input(data.getCanvas()), false);
 		surpriseGift = new SurpriseGift(data);
-		headBalloon = new HeadBalloon(data, 0, 0, new Color(0,0,0));
 	}
 
 	@Test
