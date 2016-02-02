@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import gameframework.base.ObjectWithBoundedBox;
 import gameframework.drawing.DrawableImage;
@@ -43,6 +45,8 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected static final int DEFAULT_SPEED = 8;
 	protected static final int DUCKING_SPEED = 3;
 	protected static final int LIFE = 3;
+	private static final int MAXSTRONGERSWORD = 3;
+	protected float MAXINVICIBLELIFE;
 	protected float velocity_y;
 	protected float fakeVelocity_x;
 	
@@ -75,22 +79,28 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int maxLife;
 	private int currentLife;
 	private int invulnerabilityTime;
-
+	private float invincibleLife;
+	private int initialPositionX;
+	private List<BonusSword> bonusSwords;
+	
 	public Player(final NidhoggGameData data, final Input input, final boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
 		this.maxLife = this.currentLife = LIFE;
+		this.bonusSwords = new ArrayList<BonusSword>();
 		invulnerabilityTime = 0;
 		if (isPlayer1) {
+			initialPositionX = 75;
 			color = new Color(223, 153, 65);
 			headColor = new Color(239, 117, 44);
-			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
+			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(initialPositionX, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
 					KeyEvent.VK_D, KeyEvent.VK_A, input, data, "/images/player1.png");
 			headingLeft = false;
 			sprite.setType("headingRight");
 		} else {
+			initialPositionX = Nidhogg.WIDTH - 125;
 			color = new Color(145, 63, 160);
 			headColor = new Color(75, 39, 135);
-			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(Nidhogg.WIDTH - 125, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
+			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(initialPositionX, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
 					KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
 	}
@@ -338,6 +348,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		if (score % 3 == 2) {
 			int alea = 50 + (int)(Math.random()*400);
 			this.surpriseGift.setGift(alea, this);
+			data.getUniverse().addGameEntity(surpriseGift);
 		}
 
 	}
@@ -381,35 +392,6 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		dyingParticleBehavior = new GravityParticleBehavior(dyingParticleBehavior, 100f / 1000, 250f / 1000);
 		dyingParticleBehavior = new DelayedParticleBehavior(dyingParticleBehavior, 2);
 	}
-	
-
-	/**
-	 * Modification of the score
-	 * 
-	 * @param number the number that you want add, it can be negative
-	 */
-	public void modificationScore(int number) {
-		if (number > 0) {
-			if (this.currentLife == 3) {
-				int score = this.data.getObservableValue(observableDataKey).getValue() - 1;
-				this.currentLife = 3;
-				if (score >= 0) {
-					this.data.getObservableValue(observableDataKey).setValue(score);
-					this.currentLife = 1;
-				}
-			} else {
-				this.currentLife++;
-			}
-		} else {
-			if (this.currentLife == 1) {
-				int score = this.data.getObservableValue(observableDataKey).getValue() + 1;
-				this.data.getObservableValue(observableDataKey).setValue(score);
-				this.currentLife = 3;
-			} else {
-				this.currentLife--;
-			}
-		}
-	}
 
 	public boolean isKilledBy(final Player killer) {
 		final boolean goOppositeDirection = killer.isHeadingLeft() != this.isHeadingLeft();
@@ -450,6 +432,67 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public void setCurrentLife(int currentLife) {
 		this.currentLife = currentLife;
 	}
+
+	public float getInvincibleLife() {
+		return invincibleLife;
+	}
+
+	public float getMaxInvincibleLife() {
+		return MAXINVICIBLELIFE;
+	}
 	
+	public void setMaxInvincibleLife(float max) {
+		MAXINVICIBLELIFE = max;
+	}
+
+	public void invincible() {
+		InvincibleBar invincibleBar = new InvincibleBar(60, this);
+		data.getUniverse().addGameEntity(invincibleBar);
+		this.invincibleLife = MAXINVICIBLELIFE;
+	}	
+	
+	public void decrementInvincibleLife() {
+		this.invincibleLife--;
+	}
+	
+	public boolean stillInvincible() {
+		return (invincibleLife > 0);
+	}
+
+	public int getInitialPositionX() {
+		return initialPositionX;
+	}
+
+	public void completeCurrentLife() {
+		this.currentLife= maxLife;
+	}
+
+	public void swordStronger() {
+		for (int i=MAXSTRONGERSWORD; i>0; i--) {
+			BonusSword bonus = new BonusSword(data, i-1, this);
+			setStrongerSword(bonus);
+			data.getUniverse().addGameEntity(bonus);
+		}
+	}
+	
+	public void setStrongerSword(BonusSword bonus) {
+		this.bonusSwords.add(bonus);
+	}
+	
+	public void removeStrongerSword() {
+		this.bonusSwords.get(0).canDraw(false);
+		this.bonusSwords.remove(0);
+	}
+	
+	public int getStrongerSword() {
+		return bonusSwords.size();
+	}
+
+	public void removeAllStrongerSword() {
+		for (int i = bonusSwords.size(); i>0; i--) {
+			this.bonusSwords.get(i-1).canDraw(false);
+			this.bonusSwords.remove(i-1);
+		}
+	}
 	
 }

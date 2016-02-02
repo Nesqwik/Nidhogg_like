@@ -92,7 +92,6 @@ public class Nidhogg extends GameLevelDefaultImpl {
 		j1.setSurpriseGift(surprise);
 		j2.setSurpriseGift(surprise);
 		
-		universe.addGameEntity(surprise);
 		universe.addGameEntity(emitter);
 		universe.addGameEntity(new LifeBar(5, j1));
 		universe.addGameEntity(new LifeBar(5, j2));

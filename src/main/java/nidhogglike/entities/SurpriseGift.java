@@ -24,9 +24,10 @@ import gameframework.motion.overlapping.Overlappable;
 public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlappable {
 	protected static float GRAVITY = 1f;
 	protected static float VELOCITY_Y_MAX = 5;
-	protected static int DELAYGIFTOPEN = 80;
-	protected static int TIME = 4;
+	protected int DELAYGIFTOPEN = 80;
+	protected static int TIME = 2;
 	protected static int POINT_LIFE_MODIFICATION = 2;
+	protected float MAXINVICIBLELIFE = 1000;
 	
 	private SpriteManager sprite;
 	@SuppressWarnings("unused")
@@ -38,7 +39,9 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	private boolean setTypeResponse;
 	private boolean isOnGround;
 	private int timeToOpen;
-	private boolean isGood;
+	private boolean giftInvincible;
+	private Player holder;
+	private boolean beforeIsInvincible;
 	
 
 	/**
@@ -50,7 +53,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		URL playerImage = this.getClass().getResource("/images/gift.png");
 		DrawableImage drawableImage = new DrawableImage(playerImage, data.getCanvas());
 		sprite = new SpriteManagerDefaultImpl(drawableImage, 50, 2);
-		sprite.setTypes("gift","answer");
+		sprite.setTypes("gift","answer","answer2");
 		sprite.setType("gift");
 		this.velocity_y = 0;
 		this.getPosition().y = 0;
@@ -81,10 +84,15 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 			sprite.draw(g, position);
 			timeToOpen++;
 		}
+		if (giftInvincible) {
+			this.holder.decrementInvincibleLife();
+		}
+		
 		if (timeToOpen-1 == DELAYGIFTOPEN) {
 			
 		}
 	}
+
 
 	/**
 	 * create a new gift with the coordinate x (in abscissa)
@@ -92,14 +100,19 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 * @param x the coordinate for x (in abscissa)
 	 */
 	public void setGift(int x, Player player) {
-		this.setTypeResponse = false;
-		this.timeToOpen = 0;
-		this.getPosition().x = x;
-		this.position.y = 0;
-		this.timeToLive = TIME;
-		isOpen = false;
-		sprite.setType("gift");
-		appear();
+		if ((this.holder == null) || (!this.holder.stillInvincible())) {
+			this.holder = null;
+			this.giftInvincible = false;
+			this.setTypeResponse = false;
+			this.timeToOpen = 0;
+			this.getPosition().x = x;
+			this.position.y = 0;
+			this.timeToLive = TIME;
+			isOpen = false;
+			sprite.setType("gift");
+			DELAYGIFTOPEN+=20;
+			appear();
+		}
 	}
 
 	/**
@@ -110,25 +123,62 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 */
 	protected void giveAnswer(Player player) {
 		setTypeResponse = true;
-		sprite.setType("answer");
-		if (Math.random() < 0.5) {
-			if (isGood) {
-				this.sprite.increment();
-			}
-			isGood = false;
-			player.modificationScore((-1) * POINT_LIFE_MODIFICATION);
-		} else {
-			isGood = true;
-			this.sprite.setIncrement(0);
-			player.modificationScore(POINT_LIFE_MODIFICATION);
+		
+		int alea = (int)(Math.random() * 3);
+		switch (alea) {
+		case 1: 
+			invincibleGift(player);
+			break;
+		case 2:
+			pointGift(player);
+			break;
+		default : 
+			bonusSwordGift(player);
+			break;
 		}
 	}
-	
+
+
 	/**
-	 * @return true if the gift is good else false
+	 * create a gift with bonus answer
+	 * 
+	 * @param player who take the gift
 	 */
-	public boolean isGood() {
-		return isGood;
+	protected void bonusSwordGift(Player player) {
+		sprite.setType("answer2");
+		if (player.getStrongerSword() > 0)
+			player.removeAllStrongerSword();
+		player.swordStronger();
+	}
+
+
+	/**
+	 * create gift to increment current bar
+	 * 
+	 * @param player who take the gift
+	 */
+	protected void pointGift(Player player) {
+		sprite.setType("answer");
+		beforeIsInvincible = false;
+		this.sprite.setIncrement(0);
+		player.completeCurrentLife();
+	}
+
+
+	/**
+	 * create gift to make the player invincible
+	 * 
+	 * @param player who take the gift
+	 */
+	protected void invincibleGift(Player player) {
+		sprite.setType("answer");
+		if (!beforeIsInvincible)
+			this.sprite.increment();
+		beforeIsInvincible = true;
+		giftInvincible = true;
+		player.setMaxInvincibleLife(MAXINVICIBLELIFE);
+		player.invincible();
+		MAXINVICIBLELIFE += 300;
 	}
 
 	/**
@@ -211,6 +261,7 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 	 */
 	public void takingGift(Player player) {
 		if (!isOpened()) {
+			this.holder = player;
 			this.isOpen = true;
 			giveAnswer(player);
 		}
@@ -230,5 +281,8 @@ public class SurpriseGift extends NidhoggMovable implements GameEntity, Overlapp
 		return isOpen;
 	}
 
-
+	public boolean isOnGround() {
+		return isOnGround;
+	}
+	
 }
