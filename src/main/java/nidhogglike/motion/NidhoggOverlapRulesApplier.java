@@ -34,7 +34,7 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 		
 		boolean mustKill = false;
 		
-		if (sword.getHolder().getStrongerSword() > 0) {
+		if ((sword.getHolder() != null) && (sword.getHolder().getStrongerSword() > 0)) {
 			player.emitParticle();
 			player.die();
 			mustKill = true;
