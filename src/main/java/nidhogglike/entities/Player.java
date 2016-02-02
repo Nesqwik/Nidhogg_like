@@ -325,8 +325,10 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		recoverSwordIfNeeded();
 
 		//For the SurpriseGift
-		addGift();
-		this.surpriseGift.reduceTime();
+		if (surpriseGift != null ) {
+			addGift();
+			this.surpriseGift.reduceTime();
+		}
 	}
 
 	protected void recoverSwordIfNeeded() {

@@ -45,7 +45,7 @@ public class PlayerTest {
 		player1.setPosition(new Point(100,100));
 		input.keys[KeyEvent.VK_Z]=true;
 		player1.oneStepMoveAddedBehavior();
-		//100-10+1(1 represent the gravity)
+		//100-10+1(1 represents the gravity)
 		assertEquals(91, player1.getPosition().y);
 	}
 	
@@ -65,8 +65,27 @@ public class PlayerTest {
 	public void testOneStepMoveDuck() throws AWTException {
 		//dunk
 		input.keys[KeyEvent.VK_S]=true;
+		player1.setPosition(new Point(100,100));
 		player1.oneStepMoveAddedBehavior();
-		//TODO
+		assertTrue(player1.isDucking());
+		//gravity!!
+		assertEquals(126, player1.getPosition().y);
+		assertEquals(25, player1.getBoundingBox().height);
+	}
+	
+	@Test
+	public void testOneStepMoveUnuck() throws AWTException {
+		//undunk
+		input.keys[KeyEvent.VK_S]=true;
+		player1.setPosition(new Point(-5,0));
+		player1.oneStepMoveAddedBehavior();
+		assertTrue(player1.isDucking());
+		input.keys[KeyEvent.VK_S]=false;
+		player1.oneStepMoveAddedBehavior();
+		assertFalse(player1.isDucking());
+		//gravity and out of bounds
+		assertEquals(3, player1.getPosition().y);
+		assertEquals(0, player1.getBoundingBox().y);
 	}
 
 	@Test
@@ -144,11 +163,6 @@ public class PlayerTest {
 	}
 
 	@Test
-	public void testUpdateAnimation() {
-		//TODO
-	}
-
-	@Test
 	public void testIsHoldingSword() {
 		assertFalse(player1.isHoldingSword());
 		player1.setSword(new Sword(data, true));
@@ -162,11 +176,6 @@ public class PlayerTest {
 	}
 
 	@Test
-	public void testEmitParticle() {
-		//TODO
-	}
-
-	@Test
 	public void testHit() {
 		player1.setSurpriseGift(new SurpriseGift(data));
 		player1.setParticleEmitter(new ParticleEmitter());
@@ -176,10 +185,22 @@ public class PlayerTest {
 		player1.setCurrentLife(0);
 		assertTrue(player1.hit());
 	}
+	
+	@Test
+	public void testHitWhenInvulnerabilityTime() {
+		player1.setSurpriseGift(new SurpriseGift(data));
+		player1.setParticleEmitter(new ParticleEmitter());
+		assertFalse(player1.hit());
+		assertFalse(player1.hit());
+	}
 
 	@Test
 	public void testDie() {
-		//TODO
+		player1.setSurpriseGift(new SurpriseGift(data));
+		data.getObservableValue(PLAYER1_DATA_KEY).setValue(2);
+		player1.die();
+		assertEquals(3, (int)data.getObservableValue(PLAYER1_DATA_KEY).getValue());
+		assertEquals(3, player1.getCurrentLife());
 	}
 
 	@Test
@@ -187,6 +208,13 @@ public class PlayerTest {
 		player1.recoverSwordIfNeeded();
 		assertNull(player1.getSword());
 		data.getUniverse().addGameEntity(new Sword(data, true));
+		player1.recoverSwordIfNeeded();
+		assertNotNull(player1.getSword());
+	}
+	
+	@Test
+	public void testRecoverSwordWhenNoNeeded() {
+		player1.setSword(new Sword(data, true));
 		player1.recoverSwordIfNeeded();
 		assertNotNull(player1.getSword());
 	}
@@ -202,13 +230,6 @@ public class PlayerTest {
 		//With this score, the gift is added
 		data.getObservableValue(PLAYER1_DATA_KEY).setValue(2);
 		player1.addGift();
-		assertFalse(surpriseGift.isGood());
-		
-	}
-
-	@Test
-	public void testRefinePositionAfterLateralCollision() {
-		//TODO
 	}
 
 	@Test
@@ -217,39 +238,6 @@ public class PlayerTest {
 		player1.roofCollision(null);
 		assertEquals(0, (int)player1.getVelocityY());
 		assertEquals(105, player1.getPosition().y);
-	}
-
-	@Test
-	public void testModificationScoreAtBegining() {
-		testLifeAndScore(-1, 0, 3, 0, 2, player1);
-		testLifeAndScore(1, 0, 3, 0 ,3 , player2);
-	}
-	
-	@Test
-	public void testModificationScore() {
-		testLifeAndScore(-1, 0, 1, 1, 3, player1);
-		testLifeAndScore(1, 0, 1, 0, 2, player2);
-	}
-	
-	@Test
-	public void testModificationScore2() {
-		testLifeAndScore(-1, 5, 1, 6, 3, player1);
-		testLifeAndScore(1, 5, 1, 5, 2, player2);
-	}
-	
-	@Test
-	public void testModificationScore3() {
-		testLifeAndScore(-1, 3, 2, 3, 1, player1);
-		testLifeAndScore(1, 3, 2,3,3, player2);
-	}
-	
-	protected void testLifeAndScore(int number, int scoreValue, int currentLife, int expectedScore, int expectedCurrentLife, Player player) {
-		data.getObservableValue(PLAYER1_DATA_KEY).setValue(scoreValue);
-		player.setCurrentLife(currentLife);
-		player.modificationScore(number);
-		int score = data.getObservableValue(PLAYER1_DATA_KEY).getValue();
-		assertEquals(expectedScore, score);
-		assertEquals(expectedCurrentLife, player.getCurrentLife());
 	}
 
 	@Test
@@ -267,5 +255,50 @@ public class PlayerTest {
 		assertEquals(-7, player1.getPosition().x);
 	}
 
+	@Test
+	public void testInvincibleAndDecrementInvincibleLife() {
+		player1.setMaxInvincibleLife(100);
+		player1.invincible();
+		assertEquals(100, (int)player1.getInvincibleLife());
+		player1.decrementInvincibleLife();
+		assertEquals(99, (int)player1.getInvincibleLife());
+		assertTrue(player1.stillInvincible());
+	}
+	
+	@Test
+	public void testInitialPositionX() {
+		assertEquals(75, player1.getInitialPositionX());
+		assertEquals(-125, player2.getInitialPositionX());
+	}
+	
+	@Test
+	public void completeCurrentLifeWhenItsAlreadyComplete() {
+		player1.setCurrentLife(3);
+		player1.completeCurrentLife();
+		assertEquals(3, player1.getCurrentLife());
+	}
+	
+	@Test
+	public void completeCurrentLifeWhenItsNotComplete() {
+		player1.setCurrentLife(1);
+		player1.completeCurrentLife();
+		assertEquals(3, player1.getCurrentLife());
+	}
+	
+	@Test
+	public void testSwordStrongerAndRemove() {
+		player1.swordStronger();
+		assertEquals(3, player1.getStrongerSword());
+		player1.removeAllStrongerSword();
+		assertEquals(0, player1.getStrongerSword());
+	}
+	
+	@Test
+	public void testRemoveOneStrongerSword() {
+		player1.swordStronger();
+		assertEquals(3, player1.getStrongerSword());
+		player1.removeStrongerSword();
+		assertEquals(2, player1.getStrongerSword());
+	}
 
 }
