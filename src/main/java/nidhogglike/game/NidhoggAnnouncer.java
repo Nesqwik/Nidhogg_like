@@ -1,108 +1,116 @@
 package nidhogglike.game;
 
+import gameframework.assets.Sound;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import gameframework.assets.Sound;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
 
 public class NidhoggAnnouncer {
 
-    protected static final Integer PAYBACK_THRESHOLD = 5;
-    protected List<Player> players;
-    protected List<Integer> killingSprees;
-    protected List<Integer> kills;
-    protected Sound sound;
+	protected static final Integer PAYBACK_THRESHOLD = 5;
+	protected List<Player> players;
+	protected List<Integer> killingSprees;
+	protected List<Integer> kills;
+	protected Sound sound;
 
-    protected HashMap<Integer, String> spreeSounds;
-    protected HashMap<Integer, String> killSounds;
-    protected String paybackSound;
-    protected String suicideSound;
-    protected String firstBloodSound;
+	protected HashMap<Integer, Sound> spreeSounds;
+	protected HashMap<Integer, Sound> killSounds;
+	protected Sound paybackSound;
+	protected Sound suicideSound;
+	protected Sound firstBloodSound;
 
-    protected boolean firstBlood;
+	protected boolean firstBlood;
 
-    public NidhoggAnnouncer() {
-        players = new ArrayList<>();
-        killingSprees = new ArrayList<>();
-        kills = new ArrayList<>();
-        firstBlood = false;
-        initSounds();
-    }
+	public NidhoggAnnouncer() {
+		players = new ArrayList<>();
+		killingSprees = new ArrayList<>();
+		kills = new ArrayList<>();
+		firstBlood = false;
+		initSounds();
+	}
 
-    protected void initSounds() {
-        spreeSounds = new HashMap<>();
-        killSounds = new HashMap<>();
+	protected void initSounds() {
+		spreeSounds = new HashMap<>();
+		killSounds = new HashMap<>();
 
-        firstBloodSound = "/sounds/announcer/firstblood.wav";
-        paybackSound = "/sounds/announcer/payback.wav";
+		try {
+			firstBloodSound = new Sound("/sounds/announcer/firstblood.wav");
+			paybackSound = new Sound("/sounds/announcer/payback.wav");
+			spreeSounds.put(3, new Sound("/sounds/announcer/killingspree.wav"));
+			spreeSounds.put(5, new Sound("/sounds/announcer/ownage.wav"));
+			spreeSounds.put(10, new Sound("/sounds/announcer/unstoppable.wav"));
+			spreeSounds.put(15, new Sound("/sounds/announcer/godlike.wav"));
 
-        spreeSounds.put(3, "/sounds/announcer/killingspree.wav");
-        spreeSounds.put(5, "/sounds/announcer/ownage.wav");
-        spreeSounds.put(10, "/sounds/announcer/unstoppable.wav");
-        spreeSounds.put(15, "/sounds/announcer/godlike.wav");
+			killSounds.put(25, new Sound("/sounds/announcer/ludicrouskill.wav"));
+			killSounds.put(42, new Sound("/sounds/announcer/monsterkill.wav"));
+			killSounds.put(60, new Sound("/sounds/announcer/holyshit.wav"));
+		} catch (final Exception e) {
+			System.out.println("Could not load announcer sounds");
+		}
+	}
 
-        killSounds.put(25, "/sounds/announcer/ludicrouskill.wav");
-        killSounds.put(42, "/sounds/announcer/monsterkill.wav");
-        killSounds.put(60, "/sounds/announcer/holyshit.wav");
-    }
+	public void handleKill(final Player killee, final Sword sword) {
+		registerKill(inferKiller(sword));
+		registerDeath(killee);
+	}
 
-    public void handleKill(Player killee, Sword sword) {
-        registerKill(inferKiller(sword));
-        registerDeath(killee);
-    }
+	protected Player inferKiller(final Sword sword) {
+		return sword.getHolder() != null ? sword.getHolder() : sword.getLastHolder();
+	}
 
-    protected Player inferKiller(Sword sword) {
-        return sword.getHolder() != null ? sword.getHolder() : sword.getLastHolder();
-    }
+	protected void registerKill(final Player killer) {
+		final int pos = players.indexOf(killer);
 
-    protected void registerKill(Player killer) {
-        int pos = players.indexOf(killer);
+		if (!firstBlood) {
+			firstBlood = true;
+			playSound(firstBloodSound);
+		}
 
-        if (!firstBlood) {
-            firstBlood = true;
-            playSound(firstBloodSound);
-        }
+		killingSprees.set(pos, killingSprees.get(pos) + 1);
+		playSound(spreeSounds.get(killingSprees.get(pos)));
+		kills.set(pos, kills.get(pos) + 1);
+		playSound(killSounds.get(kills.get(pos)));
+	}
 
-        killingSprees.set(pos, killingSprees.get(pos) + 1);
-        playSound(spreeSounds.get(killingSprees.get(pos)));
-        kills.set(pos, kills.get(pos) + 1);
-        playSound(killSounds.get(kills.get(pos)));
-    }
+	protected void registerDeath(final Player killee) { // haha
+		final int pos = players.indexOf(killee);
 
-    protected void registerDeath(Player killee) { // haha
-        int pos = players.indexOf(killee);
+		if (killingSprees.get(pos) >= PAYBACK_THRESHOLD) {
+			playSound(paybackSound);
+		}
 
-        if (killingSprees.get(pos) >= PAYBACK_THRESHOLD) {
-            playSound(paybackSound);
-        }
+		killingSprees.set(pos, 0);
+	}
 
-        killingSprees.set(pos, 0);
-    }
+	public void registerSuicide(final Player player) {
+		playSound(suicideSound);
+		registerDeath(player);
+	}
 
-    public void registerSuicide(Player player) {
-        playSound(suicideSound);
-        registerDeath(player);
-    }
+	protected void playSound(final Sound sound) {
+		new Thread(new Runnable() {
 
-    protected void playSound(String str) {
-        if (str == null || (sound != null && sound.isPlaying()))
-            return;
+			@Override
+			public void run() {
+				if (sound == null || sound.isPlaying())
+					return;
+				try {
+					sound.play();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
 
-        try {
-            sound = new Sound(str);
-            sound.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addPlayer(Player p) {
-        players.add(p);
-        killingSprees.add(0);
-        kills.add(0);
-    }
+	public void addPlayer(final Player p) {
+		players.add(p);
+		killingSprees.add(0);
+		kills.add(0);
+	}
 }
 
