@@ -75,8 +75,6 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 		if (!s.isHeld()) {
 			s.setMoving(false);
 			s.groundCollision(p);
-		} else if (!s.getHolder().isJumping()) {
-			s.getHolder().refinePositionAfterLateralCollision(p);
 		}
 	}
 
