@@ -45,7 +45,7 @@ public class NidhoggOverlapRulesApplierTest {
 		NidhoggAnnouncer announcer = ((NidhoggConfiguration) data.getConfiguration()).getAnnouncer();
 		announcer.addPlayer(player);
 		announcer.addPlayer(player2);
-		rulesOverlap = new NidhoggOverlapRulesApplier(announcer);
+		rulesOverlap = (NidhoggOverlapRulesApplier) ((NidhoggConfiguration) data.getConfiguration()).createOverlapRulesApplier();
 	}
 
 	@Test
