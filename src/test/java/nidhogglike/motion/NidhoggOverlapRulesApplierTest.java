@@ -17,6 +17,7 @@ import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class NidhoggOverlapRulesApplierTest {
@@ -33,13 +34,18 @@ public class NidhoggOverlapRulesApplierTest {
 	public void init() {
 		data = new NidhoggGameData(new NidhoggConfiguration(0, 0, 0, 0));
 		data.setObservableValue(Nidhogg.PLAYER1_DATA_KEY, 0);
-		rulesOverlap = new NidhoggOverlapRulesApplier(new NidhoggAnnouncer());
 		sword = new Sword(data, true);
 		sword2 = new Sword(data, false);
 		player = new Player(data, new Input(data.getCanvas()), true);
 		player.setParticleEmitter(new ParticleEmitter());
 		player2 = new Player(data, new Input(data.getCanvas()), false);
+		sword.setHolder(player);
+		sword2.setHolder(player2);
 		surpriseGift = new SurpriseGift(data);
+		NidhoggAnnouncer announcer = ((NidhoggConfiguration) data.getConfiguration()).getAnnouncer();
+		announcer.addPlayer(player);
+		announcer.addPlayer(player2);
+		rulesOverlap = new NidhoggOverlapRulesApplier(announcer);
 	}
 
 	@Test
@@ -52,10 +58,8 @@ public class NidhoggOverlapRulesApplierTest {
 	public void testOverlapRuleSwordPlayer() {
 		data.getObservableValue(Nidhogg.PLAYER1_DATA_KEY).setValue(2);
 		sword.setMoving(true);
-//		TODO Problem with announcer !
-		
-//		rulesOverlap.overlapRule(sword, player);
-//		assertEquals(3, (int)data.getObservableValue("PLAYER1_DATA_KEY").getValue());
+		rulesOverlap.overlapRule(sword, player);
+		assertEquals(3, (int)data.getObservableValue(Nidhogg.PLAYER1_DATA_KEY).getValue());
 	}
 
 	@Test
