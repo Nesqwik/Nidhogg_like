@@ -46,7 +46,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(50, 10);
+		return new Rectangle(getPosition().x, getPosition().y, 50, 10);
 	}
 
 	@Override
@@ -123,19 +123,19 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	public boolean isMoving() {
 		return this.isMoving;
 	}
-	
-	public void setVelocity_x(float newVelocity_x) {
+
+	public void setVelocity_x(final float newVelocity_x) {
 		this.velocity_x = newVelocity_x;
 	}
-	
-	public void setVelocity_y(float newVelocity_y) {
+
+	public void setVelocity_y(final float newVelocity_y) {
 		this.velocity_y = newVelocity_y;
 	}
-	
+
 	public float getVelocity_y() {
 		return velocity_y;
 	}
-	
+
 	public float getVelocity_x() {
 		return velocity_x;
 	}

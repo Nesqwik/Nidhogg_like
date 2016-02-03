@@ -3,8 +3,10 @@ package nidhogglike.game;
 import gameframework.game.GameConfiguration;
 import gameframework.game.GameData;
 import gameframework.game.GameUniverse;
+import gameframework.motion.blocking.MoveBlockerChecker;
 import gameframework.motion.blocking.MoveBlockerRulesApplier;
 import gameframework.motion.overlapping.OverlapRulesApplier;
+import nidhogglike.motion.NidhoggBlockerChecker;
 import nidhogglike.motion.NidhoggBlockerRulesApplier;
 import nidhogglike.motion.NidhoggOverlapRulesApplier;
 
@@ -12,7 +14,7 @@ public class NidhoggConfiguration extends GameConfiguration {
 
 	protected NidhoggAnnouncer announcer;
 
-	public NidhoggConfiguration(int nbRows, int nbColumns, int spriteSize, int nbLives) {
+	public NidhoggConfiguration(final int nbRows, final int nbColumns, final int spriteSize, final int nbLives) {
 		super(nbRows, nbColumns, spriteSize, nbLives);
 	}
 
@@ -22,7 +24,7 @@ public class NidhoggConfiguration extends GameConfiguration {
 	}
 
 	@Override
-	public GameUniverse createUniverse(GameData gameData) {
+	public GameUniverse createUniverse(final GameData gameData) {
 		return new NidhoggUniverse(gameData);
 	}
 
@@ -34,5 +36,10 @@ public class NidhoggConfiguration extends GameConfiguration {
 
 	public NidhoggAnnouncer getAnnouncer() {
 		return announcer;
+	}
+
+	@Override
+	public MoveBlockerChecker createMoveBlockerChecker() {
+		return new NidhoggBlockerChecker();
 	}
 }
