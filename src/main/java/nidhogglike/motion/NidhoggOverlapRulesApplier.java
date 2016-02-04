@@ -29,33 +29,30 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			player.setSword(sword);
 		}
 		
-		if (player.stillInvincible())
+		if (player.stillInvincible()) {
 			mustHit = false;
+		}
 		
 		boolean mustKill = false;
 
 		if ((sword.getHolder() != null) && (sword.getHolder().getStrongerSword() > 0) && (player != sword.getHolder())) {
-			player.emitParticle();
-			player.die();
 			mustKill = true;
 			sword.getHolder().removeStrongerSword();
-			announcer.handleKill(player, sword);
 			player.setCurrentLife(3);
-			return;
-		}
-		
-		if (mustHit) {
+		} else if (mustHit) {
 			if (!sword.isHeld()) {
-				player.emitParticle();
-				player.die();
 				mustKill = true;
 			} else {
 				mustKill = player.hit();
 			}
 		}
-
+		
 		if (mustKill) {
+			player.emitParticle();
+			player.die();
 			announcer.handleKill(player, sword);
+		} else {
+			player.pushInDirection(sword.getPosition().x > player.getPosition().x);
 		}
 	}
 

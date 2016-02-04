@@ -492,4 +492,14 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		}
 	}
 
+	public void pushInDirection(boolean toTheLeft) {
+		final int moveSpeed = (int) (getSpeedVector().getSpeed() * 1.5);
+		if (toTheLeft) {
+			getPosition().x -= moveSpeed;
+		} else {
+			getPosition().x += moveSpeed;
+		}
+		outOfBoundsVerification();
+	}
+
 }
