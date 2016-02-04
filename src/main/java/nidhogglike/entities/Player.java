@@ -281,7 +281,9 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 
 	public void setSword(final Sword sword) {
-		sword.setHolder(this);
+		if (sword != null) {
+			sword.setHolder(this);
+		}
 		this.sword = sword;
 	}
 
@@ -362,7 +364,7 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	public void refinePositionAfterLateralCollision(final Platform collisioner) {
 		final boolean leftCollision = this.getPosition().x >
-			collisioner.getBoundingBox().x + (collisioner.getBoundingBox().width / 2);
+		collisioner.getBoundingBox().x + (collisioner.getBoundingBox().width / 2);
 
 		if (leftCollision) {
 			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width;
@@ -498,6 +500,12 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 			getPosition().x += moveSpeed;
 		}
 		outOfBoundsVerification();
+	}
+
+	public void hitByBalloon() {
+		if (sword != null) {
+			sword.drop();
+		}
 	}
 
 }

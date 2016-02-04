@@ -21,11 +21,11 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 		}
 		boolean mustHit = false;
 
-		if (sword.isMoving()) {
+		if (sword.isMoving() && !sword.isDropped()) {
 			mustHit = true;
 		} else if (sword.getHolder() != null) {
 			mustHit = player.isKilledBy(sword.getHolder());
-		} else if (!player.isHoldingSword()) {
+		} else if (!player.isHoldingSword() && !sword.isDropped()) {
 			player.setSword(sword);
 		}
 		
@@ -40,7 +40,7 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			sword.getHolder().removeStrongerSword();
 			player.setCurrentLife(3);
 		} else if (mustHit) {
-			if (!sword.isHeld()) {
+			if (!sword.isHeld() && !sword.isDropped()) {
 				mustKill = true;
 			} else {
 				mustKill = player.hit();
@@ -51,7 +51,7 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			player.emitParticle();
 			player.die();
 			announcer.handleKill(player, sword);
-		} else {
+		} else if (mustHit){
 			player.pushInDirection(sword.getPosition().x > player.getPosition().x);
 		}
 	}
@@ -61,9 +61,9 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 			s2.getHolder().pushBackwards();
 			s1.getHolder().pushBackwards();
 		} else if (s1.isHeld() && s2.isMoving()) {
-			s2.setVelocity_x(-2);
+			s2.drop();
 		} else if (s2.isHeld() && s1.isMoving()) {
-			s1.setVelocity_x(-2);
+			s1.drop();
 		}
 	}
 
@@ -72,7 +72,7 @@ public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {
 	}
 
 	public void overlapRule(final HeadBalloon baloon, final Player player) {
-		baloon.isShotBy(player);
+		baloon.playerCollision(player);
 	}
 
 }

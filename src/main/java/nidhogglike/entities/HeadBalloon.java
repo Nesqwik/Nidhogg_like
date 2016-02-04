@@ -1,5 +1,6 @@
 package nidhogglike.entities;
 
+import gameframework.base.ObjectWithBoundedBox;
 import gameframework.game.GameEntity;
 import gameframework.motion.overlapping.Overlappable;
 
@@ -15,7 +16,7 @@ import nidhogglike.motion.NidhoggMovable;
 
 public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEntity {
 
-	private static final int INITIAL_TTL = 10 * 60;
+	private static final int INITIAL_TTL = 10 * 600;
 
 	private static final float VELOCITY_MIN = 1f;
 	private static final float GRAVITY = 1f;
@@ -121,12 +122,12 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 		}
 	}
 
-	public void handleCollision(final Platform platform) {
+	public void handleCollision(final ObjectWithBoundedBox boundedObject) {
 		// There's 4 possibilities for the new position of the ball, at the left, the right, the top or the bottom of the platform
-		final int newX1 = platform.getBoundingBox().x - getBoundingBox().width;
-		final int newX2 = platform.getBoundingBox().x + platform.getBoundingBox().width;
-		final int newY1 = platform.getBoundingBox().y - getBoundingBox().height;
-		final int newY2 = platform.getBoundingBox().y + platform.getBoundingBox().height;
+		final int newX1 = boundedObject.getBoundingBox().x - getBoundingBox().width;
+		final int newX2 = boundedObject.getBoundingBox().x + boundedObject.getBoundingBox().width;
+		final int newY1 = boundedObject.getBoundingBox().y - getBoundingBox().height;
+		final int newY2 = boundedObject.getBoundingBox().y + boundedObject.getBoundingBox().height;
 
 		// We choose the one that is the nearest to the ball's actual position
 		final int deltaX1 = (int) Math.abs(this.getPosition().x  - newX1 - velocity_x);
@@ -159,14 +160,27 @@ public class HeadBalloon extends NidhoggMovable implements Overlappable, GameEnt
 	private boolean canBeShot() {
 		return timeBeforeShot <= 0;
 	}
+	
+	protected Player playerShooter = null;
 
-	public void isShotBy(final Player player) {
+	public void shoot() {
 		if(canBeShot()) {
-			float speed = (player.isDucking() ? 0.5f : 1f);
-			speed *= (player.getFakeVelocityX() + 1);
-			velocity_x = (player.isHeadingLeft() ? -speed : speed);
-			velocity_y = player.getFakeVelocityX() == 0 ? 0 :  getRandomSpeed(20, 27);
+			float speed = (playerShooter.isDucking() ? 0.5f : 1f);
+			speed *= (playerShooter.getFakeVelocityX() + 1);
+			velocity_x = (playerShooter.isHeadingLeft() ? -speed : speed);
+			velocity_y = playerShooter.getFakeVelocityX() == 0 ? 0 :  getRandomSpeed(20, 27);
 			timeBeforeShot = 20f;
+		}
+	}
+
+	public void playerCollision(Player player) {
+		if (playerShooter == null) {
+			playerShooter = player;
+			shoot();
+		} else {
+			player.hitByBalloon();
+			handleCollision(playerShooter);
+			playerShooter = null;
 		}
 	}
 }

@@ -32,6 +32,8 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 
 	private Player lastHolder = null;
 	private boolean planted = false;
+	
+	protected boolean isDropped = false;
 
 	public Sword(final GameData data, final boolean isHeadingLeft){
 		super(new GameMovableDriverDefaultImpl());
@@ -108,6 +110,7 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 		velocity_y = 0;
 		velocity_x = 0;
 		setMoving(false);
+		setDropped(false);
 		planted = true;
 	}
 
@@ -158,5 +161,24 @@ public class Sword extends NidhoggMovable implements GameEntity, Overlappable {
 	}
 	public Player getHolder() {
 		return holder;
+	}
+	
+	public boolean isDropped() {
+		return isDropped;
+	}
+
+	public void setDropped(boolean isDropped) {
+		this.isDropped = isDropped;
+	}
+	
+	public void drop() {
+		this.setVelocity_x(-2);
+		this.setDropped(true);
+		setMoving(true);
+		
+		if (this.holder != null) {
+			holder.setSword(null);
+			this.holder = null;
+		}
 	}
 }
