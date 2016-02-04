@@ -1,4 +1,4 @@
-package nidhogglike.entities;
+package nidhogglike.entities.obstacles;
 
 import java.awt.Graphics;
 

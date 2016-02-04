@@ -1,4 +1,4 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bonus;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -9,6 +9,7 @@ import gameframework.game.GameData;
 import gameframework.game.GameEntity;
 import gameframework.motion.GameMovableDriverDefaultImpl;
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.Player;
 import nidhogglike.motion.NidhoggMovable;
 
 /**

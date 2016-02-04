@@ -1,4 +1,4 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bonus;
 
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.net.URL;
 
+import nidhogglike.entities.Player;
 import nidhogglike.motion.NidhoggMovable;
 
 /**

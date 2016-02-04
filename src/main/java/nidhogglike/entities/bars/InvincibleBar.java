@@ -1,9 +1,10 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bars;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.Player;
 
 /**
  * Invincible Bar is a bonus 
@@ -24,7 +25,7 @@ public class InvincibleBar extends Bar {
 	}
 	
 	/**
-	 * @see nidhogglike.entities.Bar#draw(java.awt.Graphics)
+	 * @see nidhogglike.entities.bars.Bar#draw(java.awt.Graphics)
 	 */
 	@Override
 	public void draw(Graphics g) {
@@ -34,7 +35,7 @@ public class InvincibleBar extends Bar {
 	}
 
 	/**
-	 * @see nidhogglike.entities.Bar#positionX()
+	 * @see nidhogglike.entities.bars.Bar#positionX()
 	 */
 	@Override
 	protected int positionX() {
@@ -46,7 +47,7 @@ public class InvincibleBar extends Bar {
 	}
 
 	/**
-	 * @see nidhogglike.entities.Bar#positionY()
+	 * @see nidhogglike.entities.bars.Bar#positionY()
 	 */
 	@Override
 	protected int positionY() {
@@ -54,7 +55,7 @@ public class InvincibleBar extends Bar {
 	}
 
 	/**
-	 * @see nidhogglike.entities.Bar#lifeWidth()
+	 * @see nidhogglike.entities.bars.Bar#lifeWidth()
 	 */
 	@Override
 	protected int lifeWidth() {
@@ -62,7 +63,7 @@ public class InvincibleBar extends Bar {
 	}
 
 	/**
-	 * @see nidhogglike.entities.Bar#getColor1()
+	 * @see nidhogglike.entities.bars.Bar#getColor1()
 	 */
 	@Override
 	protected Color getColor1() {
@@ -70,7 +71,7 @@ public class InvincibleBar extends Bar {
 	}
 
 	/**
-	 * @see nidhogglike.entities.Bar#getColor2()
+	 * @see nidhogglike.entities.bars.Bar#getColor2()
 	 */
 	@Override
 	protected Color getColor2() {

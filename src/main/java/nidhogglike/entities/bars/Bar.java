@@ -1,10 +1,11 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bars;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import gameframework.game.GameEntity;
+import nidhogglike.entities.Player;
 import nidhogglike.motion.NidhoggMovable;
 
 /**

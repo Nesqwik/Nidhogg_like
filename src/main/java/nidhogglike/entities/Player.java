@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.bars.InvincibleBar;
+import nidhogglike.entities.bonus.BonusSword;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
 import nidhogglike.input.Input;
@@ -365,12 +369,6 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		} else {
 			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width;
 		}
-	}
-
-	public void roofCollision(final Platform platform) {
-		getPosition().y = platform.getBoundingBox().y + platform.getBoundingBox().height;
-		velocity_y = GRAVITY;
-		jumpHeight = JUMP_HEIGHT;
 	}
 
 	public float getVelocityY() {

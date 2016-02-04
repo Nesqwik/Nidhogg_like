@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;

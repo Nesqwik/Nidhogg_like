@@ -1,5 +1,7 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bars;
 
+import nidhogglike.entities.bars.Bar;
+import nidhogglike.entities.bars.InvincibleBar;
 
 public class InvincibleBarTest extends BarTest {
 

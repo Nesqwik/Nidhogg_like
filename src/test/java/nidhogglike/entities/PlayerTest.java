@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
@@ -230,14 +232,6 @@ public class PlayerTest {
 		//With this score, the gift is added
 		data.getObservableValue(PLAYER1_DATA_KEY).setValue(2);
 		player1.addGift();
-	}
-
-	@Test
-	public void testRoofCollision() {
-		player1.setPosition(new Point(100,100));
-		player1.roofCollision(null);
-		assertEquals(0, (int)player1.getVelocityY());
-		assertEquals(105, player1.getPosition().y);
 	}
 
 	@Test

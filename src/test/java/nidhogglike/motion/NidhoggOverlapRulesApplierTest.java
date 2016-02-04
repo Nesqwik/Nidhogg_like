@@ -9,8 +9,8 @@ import java.awt.Point;
 
 import nidhogglike.Nidhogg;
 import nidhogglike.entities.Player;
-import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
+import nidhogglike.entities.bonus.SurpriseGift;
 import nidhogglike.game.NidhoggAnnouncer;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;

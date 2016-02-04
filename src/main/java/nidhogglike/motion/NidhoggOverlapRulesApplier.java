@@ -3,8 +3,8 @@ package nidhogglike.motion;
 import gameframework.motion.overlapping.OverlapRulesApplierDefaultImpl;
 import nidhogglike.entities.HeadBalloon;
 import nidhogglike.entities.Player;
-import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
+import nidhogglike.entities.bonus.SurpriseGift;
 import nidhogglike.game.NidhoggAnnouncer;
 
 public class NidhoggOverlapRulesApplier extends OverlapRulesApplierDefaultImpl {

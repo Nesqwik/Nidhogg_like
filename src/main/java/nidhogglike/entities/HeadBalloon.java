@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.motion.NidhoggMovable;
 

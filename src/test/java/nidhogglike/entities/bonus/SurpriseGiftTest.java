@@ -1,10 +1,13 @@
-package nidhogglike.entities;
+package nidhogglike.entities.bonus;
 
 import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import nidhogglike.entities.Player;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;

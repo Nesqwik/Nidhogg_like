@@ -10,12 +10,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
-import nidhogglike.entities.Ground;
 import nidhogglike.entities.HeadBalloon;
-import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
-import nidhogglike.entities.SurpriseGift;
 import nidhogglike.entities.Sword;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Ground;
+import nidhogglike.entities.obstacles.Platform;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
 	/**
