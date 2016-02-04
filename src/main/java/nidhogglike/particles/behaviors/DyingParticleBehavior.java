@@ -4,17 +4,28 @@ import java.awt.Color;
 
 import nidhogglike.particles.Particle;
 
-public class DyingParticle extends ParticleBehavior {
+/**
+ * This behavior will remove the particle after a certain time
+ */
+public class DyingParticleBehavior extends ParticleBehavior {
 	protected int timeToLive;
 	protected boolean fadeOpacity;
 	
-	public DyingParticle(ParticleBehavior behavior, int timeToLive, boolean fadeOpacity) {
+	/**
+	 * Constructor
+	 * @param behavior Particle's behavior
+	 * @param timeToLive Time before the removal of the particle
+	 * @param fadeOpacity If this is true, the particle will gradually disappear (particle's opacity will
+	 *  decrease as it's approaching its death)
+	 */
+	public DyingParticleBehavior(ParticleBehavior behavior, int timeToLive, boolean fadeOpacity) {
 		super(behavior);
 		this.timeToLive = timeToLive;
 		this.fadeOpacity = fadeOpacity;
 	}
 
 	/**
+	 * Return true if the particle's time to live has expired
 	 * @see nidhogglike.particles.behaviors.ParticleBehavior#isDead(nidhogglike.particles.Particle)
 	 */
 	@Override
@@ -23,6 +34,7 @@ public class DyingParticle extends ParticleBehavior {
 	}
 
 	/**
+	 * Will gradually decrease the opacity of the particle if "fadeOpacity" was set to true
 	 * @see nidhogglike.particles.behaviors.ParticleBehavior#update(nidhogglike.particles.Particle)
 	 */
 	@Override

@@ -1,13 +1,5 @@
 package nidhogglike.entities;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.net.URL;
-
-import gameframework.base.ObjectWithBoundedBox;
 import gameframework.drawing.DrawableImage;
 import gameframework.drawing.SpriteManager;
 import gameframework.drawing.SpriteManagerDefaultImpl;
@@ -17,21 +9,31 @@ import gameframework.motion.MoveStrategyConfigurableKeyboard;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.overlapping.Overlappable;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import nidhogglike.Nidhogg;
+import nidhogglike.entities.bars.InvincibleBar;
+import nidhogglike.entities.bonus.BonusSword;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.game.NidhoggUniverse;
 import nidhogglike.input.Input;
 import nidhogglike.motion.NidhoggMovable;
 import nidhogglike.particles.ParticleEmitter;
-import nidhogglike.particles.behaviors.DelayedParticle;
-import nidhogglike.particles.behaviors.DyingParticle;
-import nidhogglike.particles.behaviors.GravityParticle;
-import nidhogglike.particles.behaviors.MovingParticle;
+import nidhogglike.particles.behaviors.DefaultParticleBehavior;
+import nidhogglike.particles.behaviors.DelayedParticleBehavior;
+import nidhogglike.particles.behaviors.DyingParticleBehavior;
+import nidhogglike.particles.behaviors.GravityParticleBehavior;
+import nidhogglike.particles.behaviors.MovingParticleBehavior;
 import nidhogglike.particles.behaviors.ParticleBehavior;
-
-import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
-
 
 /**
  * @author Team 2
@@ -43,8 +45,16 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected static final int HITBOX_HEIGHT = 50;
 	protected static final int DEFAULT_SPEED = 8;
 	protected static final int DUCKING_SPEED = 3;
+	protected static final int LIFE = 3;
+	private static final int MAXSTRONGERSWORD = 3;
+	protected float MAXINVICIBLELIFE;
 	protected float velocity_y;
+	protected float fakeVelocity_x;
+
+	private static float ACCELERATION = 0.5f;
 	private static float VELOCITY_Y_MAX = 10;
+	private static float VELOCITY_X_MAX = 15;
+
 	private static float GRAVITY = 1f;
 	private static int JUMP_HEIGHT = 10;
 	private boolean jumping;
@@ -59,28 +69,44 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	private int throwKey;
 	private boolean ducking;
 	private boolean headingLeft;
-	private int boundingBoxHeight;
+	private int boundingBoxHeight = 0;
 	protected String spriteTypePrefix;
 	private String observableDataKey;
 	private Point respawnPosition;
 	private ParticleEmitter particleEmitter;
 	private ParticleBehavior dyingParticleBehavior;
-	private Color color;
+	private Color color, headColor;
 	private SurpriseGift surpriseGift;
+	private int maxLife;
+	private int currentLife;
+	private int invulnerabilityTime;
+	private float invincibleLife;
+	private int initialPositionX;
+	private final List<BonusSword> bonusSwords;
+
+	private Rectangle boundingBox;
 
 	public Player(final NidhoggGameData data, final Input input, final boolean isPlayer1) {
 		super(new GameMovableDriverDefaultImpl());
+		this.maxLife = this.currentLife = LIFE;
+		this.bonusSwords = new ArrayList<BonusSword>();
+		invulnerabilityTime = 0;
 		if (isPlayer1) {
-			color = new Color(255, 160, 64);
-			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(75, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
+			initialPositionX = 75;
+			color = new Color(223, 153, 65);
+			headColor = new Color(239, 117, 44);
+			initPlayer(Nidhogg.PLAYER1_DATA_KEY, new Point(initialPositionX, 0), KeyEvent.VK_Z, KeyEvent.VK_Q, KeyEvent.VK_S,
 					KeyEvent.VK_D, KeyEvent.VK_A, input, data, "/images/player1.png");
 			headingLeft = false;
 			sprite.setType("headingRight");
 		} else {
+			initialPositionX = Nidhogg.WIDTH - 125;
 			color = new Color(145, 63, 160);
-			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(Nidhogg.WIDTH - 125, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
+			headColor = new Color(75, 39, 135);
+			initPlayer(Nidhogg.PLAYER2_DATA_KEY, new Point(initialPositionX, 0), KeyEvent.VK_UP, KeyEvent.VK_LEFT,
 					KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT, input, data, "/images/player2.png");
 		}
+		boundingBox = new Rectangle(getPosition().x, getPosition().y, 40, HITBOX_HEIGHT);
 	}
 
 	protected void initPlayer(final String observableDataKey, final Point respawnPosition, final int keyUp,
@@ -124,11 +150,16 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public Rectangle getBoundingBox() {
-		return new Rectangle(40, boundingBoxHeight);
+		boundingBox = new Rectangle(getPosition().x, getPosition().y, boundingBox.width, boundingBoxHeight);
+		return boundingBox;
 	}
 
 	@Override
 	public void oneStepMoveAddedBehavior() {
+		if (invulnerabilityTime > 0) {
+			--invulnerabilityTime;
+		}
+
 		if (input.isPressed(jumpKey) && jumpHeight < JUMP_HEIGHT) {
 			velocity_y = -10;
 			jumping = true;
@@ -205,8 +236,11 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	protected void updateDirection() {
 		if (speedVector.getDirection().x != 0) {
 			headingLeft = speedVector.getDirection().x < 0;
-
+			fakeVelocity_x += ACCELERATION;
+			fakeVelocity_x = Math.min(fakeVelocity_x, VELOCITY_X_MAX);
 			sprite.setType(spriteTypePrefix + (headingLeft ? "Left" : "Right"));
+		} else {
+			fakeVelocity_x = 0;
 		}
 	}
 
@@ -224,11 +258,18 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 
 	@Override
 	public void draw(final Graphics g) {
-		sprite.draw(g, position);
+		if (invulnerabilityTime % 4 == 0) {
+			sprite.draw(g, position);
+		}
 	}
-	
-	public void setSurpriseGift(SurpriseGift sg) {
-		this.surpriseGift = sg;
+
+	/**
+	 * Set a surprise gift to the player
+	 *
+	 * @param surpriseGift the surprise gift
+	 */
+	public void setSurpriseGift(final SurpriseGift surpriseGift) {
+		this.surpriseGift = surpriseGift;
 	}
 
 	public boolean isHoldingSword() {
@@ -248,20 +289,51 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 		return headingLeft;
 	}
 
-	public void die() {
+	public void emitParticle() {
 		// Particles
-		particleEmitter.emit(color, this.getPosition().x + this.getBoundingBox().width / 2,
-				this.getPosition().y + this.getBoundingBox().height / 2, 20, dyingParticleBehavior);
+		final Rectangle rect = new Rectangle(this.getPosition().x + this.getBoundingBox().width / 2,
+				this.getPosition().y + this.getBoundingBox().height / 2, 7, 7);
+
+		particleEmitter.emit(color, rect, 20, dyingParticleBehavior);
+	}
+
+	public boolean hit() {
+		if (invulnerabilityTime > 0) {
+			return false;
+		}
+
+		emitParticle();
+
+		currentLife -= 1;
+		if (currentLife <= 0) {
+			die();
+			return true;
+		} else {
+			invulnerabilityTime = 60;
+		}
+		return false;
+	}
+
+	public void die() {
+		if (invulnerabilityTime > 0) {
+			return;
+		}
 
 		// Head
-		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, color));
+		data.getUniverse().addGameEntity(new HeadBalloon(data, this.getPosition().x, this.getPosition().y, headColor));
 
 		data.incrementObservableValue(observableDataKey, 1);
 		// Respawn
 		resetPosition();
+		this.currentLife = this.maxLife;
 
 		recoverSwordIfNeeded();
-//		addGift();
+
+		//For the SurpriseGift
+		if (surpriseGift != null ) {
+			addGift();
+			this.surpriseGift.reduceTime();
+		}
 	}
 
 	protected void recoverSwordIfNeeded() {
@@ -271,63 +343,49 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 				setSword(sword);
 			}
 		}
-		
-		
+
+
 	}
 
+	/**
+	 * Add a new gift in the SurpriseGift, it appears with a random coordinate
+	 */
 	protected void addGift() {
-		int score = this.data.getObservableValue(observableDataKey).getValue();
-		if (score % 10 == 5) {
-			int alea = 50 + (int)(Math.random()*400);
-			Gift gift = new Gift(alea);
-			this.surpriseGift.setGift(gift);
-			this.surpriseGift.setCanDraw(true);
-			this.surpriseGift.appear();
+		final int score = this.data.getObservableValue(observableDataKey).getValue();
+		if (score % 3 == 2) {
+			final int alea = 50 + (int)(Math.random()*400);
+			this.surpriseGift.setGift(alea, this);
+			data.getUniverse().addGameEntity(surpriseGift);
 		}
+
 	}
 
-	public void refinePositionAfterLateralCollision(final ObjectWithBoundedBox collisioner) {
-		final boolean leftCollision = this.getPosition().x > collisioner.getBoundingBox().x;
+	public void refinePositionAfterLateralCollision(final Platform collisioner) {
+		final boolean leftCollision = this.getPosition().x >
+			collisioner.getBoundingBox().x + (collisioner.getBoundingBox().width / 2);
 
 		if (leftCollision) {
-			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width + 10;
-			if (isHoldingSword() && isHeadingLeft()) {
-				getPosition().x += sword.getBoundingBox().width;
-			}
+			getPosition().x = collisioner.getBoundingBox().x + collisioner.getBoundingBox().width;
 		} else {
-			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width - 10;
-			if (isHoldingSword() && !isHeadingLeft()) {
-				getPosition().x -= sword.getBoundingBox().width;
-			}
+			getPosition().x = collisioner.getBoundingBox().x - this.getBoundingBox().width;
 		}
-		applyGravity();
-	}
-
-	public void roofCollision(final Platform platform) {
-		velocity_y = 0;
-		jumpHeight = JUMP_HEIGHT;
-		this.getPosition().y += 5;
 	}
 
 	public float getVelocityY() {
 		return velocity_y;
 	}
 
+	public float getFakeVelocityX() {
+		return fakeVelocity_x;
+	}
+
 	public void setParticleEmitter(final ParticleEmitter emitter) {
 		this.particleEmitter = emitter;
-		dyingParticleBehavior = new MovingParticle(null, 7, -Math.PI * 6 / 10, -Math.PI * 4 / 10);
-		dyingParticleBehavior = new DyingParticle(dyingParticleBehavior, 300, false);
-		dyingParticleBehavior = new GravityParticle(dyingParticleBehavior, 100, 250);
-		dyingParticleBehavior = new DelayedParticle(dyingParticleBehavior, 2);
-	}
-	
-
-	public void increaseScore(int add) {
-		this.data.getScore().setValue(this.data.getScore().getValue() + add);
-	}
-
-	public void isTakingGift(SurpriseGift s) {
-		s.takingGift(this);
+		dyingParticleBehavior = new DefaultParticleBehavior();
+		dyingParticleBehavior = new MovingParticleBehavior(dyingParticleBehavior, 7, -Math.PI * 6 / 10, -Math.PI * 4 / 10);
+		dyingParticleBehavior = new DyingParticleBehavior(dyingParticleBehavior, 300, false);
+		dyingParticleBehavior = new GravityParticleBehavior(dyingParticleBehavior, 100f / 1000, 250f / 1000);
+		dyingParticleBehavior = new DelayedParticleBehavior(dyingParticleBehavior, 2);
 	}
 
 	public boolean isKilledBy(final Player killer) {
@@ -353,4 +411,93 @@ public class Player extends NidhoggMovable implements GameEntity, Overlappable {
 	public boolean isJumping() {
 		return jumping;
 	}
+
+	public int getMaxLife() {
+		return maxLife;
+	}
+
+	public void setMaxLife(final int maxLife) {
+		this.maxLife = maxLife;
+	}
+
+	public int getCurrentLife() {
+		return currentLife;
+	}
+
+	public void setCurrentLife(final int currentLife) {
+		this.currentLife = currentLife;
+	}
+
+	public float getInvincibleLife() {
+		return invincibleLife;
+	}
+
+	public float getMaxInvincibleLife() {
+		return MAXINVICIBLELIFE;
+	}
+
+	public void setMaxInvincibleLife(final float max) {
+		MAXINVICIBLELIFE = max;
+	}
+
+	public void invincible() {
+		final InvincibleBar invincibleBar = new InvincibleBar(60, this);
+		data.getUniverse().addGameEntity(invincibleBar);
+		this.invincibleLife = MAXINVICIBLELIFE;
+	}
+
+	public void decrementInvincibleLife() {
+		this.invincibleLife--;
+	}
+
+	public boolean stillInvincible() {
+		return (invincibleLife > 0);
+	}
+
+	public int getInitialPositionX() {
+		return initialPositionX;
+	}
+
+	public void completeCurrentLife() {
+		this.currentLife= maxLife;
+	}
+
+	public void swordStronger() {
+		for (int i=MAXSTRONGERSWORD; i>0; i--) {
+			final BonusSword bonus = new BonusSword(data, i-1, this);
+			setStrongerSword(bonus);
+			data.getUniverse().addGameEntity(bonus);
+		}
+	}
+
+	public void setStrongerSword(final BonusSword bonus) {
+		this.bonusSwords.add(bonus);
+	}
+
+	public void removeStrongerSword() {
+		this.bonusSwords.get(0).canDraw(false);
+		this.bonusSwords.remove(0);
+	}
+
+	public int getStrongerSword() {
+		return bonusSwords.size();
+	}
+
+	public void removeAllStrongerSword() {
+		for (int i = bonusSwords.size(); i>0; i--) {
+			this.bonusSwords.get(i-1).canDraw(false);
+			this.bonusSwords.remove(i-1);
+		}
+	}
+
+	public void pushInDirection(boolean toTheLeft) {
+		final int moveSpeed = (int) (getSpeedVector().getSpeed() * 1.5);
+		if (toTheLeft) {
+			getPosition().x -= moveSpeed;
+		} else {
+			getPosition().x += moveSpeed;
+		}
+		outOfBoundsVerification();
+	}
+
 }

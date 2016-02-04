@@ -7,17 +7,18 @@ import gameframework.game.GameData;
 import gameframework.game.GameLevelDefaultImpl;
 import gameframework.gui.GameStatusBarElement;
 import gameframework.gui.GameWindow;
-import nidhogglike.entities.Ground;
-import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
+import nidhogglike.entities.bars.LifeBar;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Ground;
+import nidhogglike.entities.obstacles.Platform;
 import nidhogglike.game.NidhoggConfiguration;
 import nidhogglike.game.NidhoggGameData;
 import nidhogglike.input.Input;
 import nidhogglike.particles.ParticleEmitter;
 
-import nidhogglike.surprise.Gift;
-import nidhogglike.surprise.SurpriseGift;
+
 
 
 /**
@@ -54,10 +55,11 @@ public class Nidhogg extends GameLevelDefaultImpl {
 	 */
 	@Override
 	protected void init() {
-		final Input input = new Input(data.getCanvas());
-		this.gameBoard = new NidhoggUniverseViewPort();
-		this.gameBoard.setGameData(data);
 		final ParticleEmitter emitter = new ParticleEmitter();
+		final Input input = new Input(data.getCanvas());
+		this.gameBoard = new NidhoggUniverseViewPort(emitter);
+		this.gameBoard.setGameData(data);
+		
 
 		final Player j1 = new Player((NidhoggGameData) data, input, true);
 		final Player j2 = new Player((NidhoggGameData) data, input, false);
@@ -84,14 +86,15 @@ public class Nidhogg extends GameLevelDefaultImpl {
 			addSmallPlatforms();
 		}
 		
-//		SurpriseGift surprise = new SurpriseGift(data);
-//		surprise.setGift(new Gift(200));
-//		
-//		j1.setSurpriseGift(surprise);
-//		j2.setSurpriseGift(surprise);
-//		
-//		universe.addGameEntity(surprise);
+
+		SurpriseGift surprise = new SurpriseGift(data);
+		
+		j1.setSurpriseGift(surprise);
+		j2.setSurpriseGift(surprise);
+		
 		universe.addGameEntity(emitter);
+		universe.addGameEntity(new LifeBar(5, j1));
+		universe.addGameEntity(new LifeBar(5, j2));
 	}
 
 	private void addSmallPlatforms() {

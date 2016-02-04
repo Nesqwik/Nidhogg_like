@@ -1,22 +1,41 @@
 package nidhogglike.particles;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import nidhogglike.particles.behaviors.ParticleBehavior;
 
+/**
+ * Stores every useful information about a single particle
+ * like its position on the screen, its color...
+ */
 public class Particle {
 	protected double x;
 	protected double y;
-	protected double velocity_y;
+	protected double velocityY;
 	protected int timeAlive;
 	protected Color color;
 	protected double randomness;
 	protected int id;
+	protected int width;
+	protected int height;
 	protected ParticleBehavior behavior;
 	
-	public Particle(Color color, int id, int x, int y, ParticleBehavior behavior) {
+	/**
+	 * Constructor
+	 * @param id Id of the particle
+	 * @param color Color of the particle
+	 * @param x Initial x position of the particle on the screen
+	 * @param y Initial y position of the particle on the screen
+	 * @param width Initial width of the particle on the screen
+	 * @param height Initial height of the particle on the screen
+	 * @param behavior Behavior used to update the particle
+	 */
+	public Particle(int id, Color color, int x, int y, int width, int height, ParticleBehavior behavior) {
 		this.x = x;
 		this.y = y;
+		this.width = width;
+		this.height = height;
 		this.behavior = behavior;
 		this.randomness = Math.random();
 		this.color = color;
@@ -24,7 +43,18 @@ public class Particle {
 	}
 	
 	/**
-	 * @return the x
+	 * Constructor
+	 * @param id Id of the particle
+	 * @param color Color of the particle
+	 * @param rectangle Rectangle defining the initial size and position of the particle
+	 * @param behavior Behavior used to update the particle
+	 */
+	public Particle(int id, Color color, Rectangle rectangle, ParticleBehavior behavior) {
+		this(id, color, rectangle.x, rectangle.y, rectangle.width, rectangle.height, behavior);
+	}
+	
+	/**
+	 * @return the x position on the screen of the particle
 	 */
 	public double getX() {
 		return x;
@@ -36,7 +66,7 @@ public class Particle {
 		this.x = x;
 	}
 	/**
-	 * @return the y
+	 * @return the y position on the screen of the particle
 	 */
 	public double getY() {
 		return y;
@@ -48,7 +78,7 @@ public class Particle {
 		this.y = y;
 	}
 	/**
-	 * @return the timeAlive
+	 * @return the timeAlive of the particle
 	 */
 	public int getTimeAlive() {
 		return timeAlive;
@@ -60,7 +90,7 @@ public class Particle {
 		this.timeAlive = timeAlive;
 	}
 	/**
-	 * @return the color
+	 * @return the color of the particle
 	 */
 	public Color getColor() {
 		return color;
@@ -71,19 +101,14 @@ public class Particle {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
 	/**
 	 * @return the behavior
 	 */
 	public ParticleBehavior getBehavior() {
 		return behavior;
 	}
-	/**
-	 * @param behavior the behavior to set
-	 */
-	public void setBehavior(ParticleBehavior behavior) {
-		this.behavior = behavior;
-	}
-
+	
 	/**
 	 * @return the randomness
 	 */
@@ -92,32 +117,51 @@ public class Particle {
 	}
 
 	/**
-	 * @return the id
-	 */
+	 * @return the id of the particle
+	 */ 
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the velocityY of the particle
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public double getVelocityY() {
+		return velocityY;
 	}
 
 	/**
-	 * @return the velocity_y
+	 * @param velocityY the velocityY to set
 	 */
-	public double getVelocity_y() {
-		return velocity_y;
+	public void setVelocityY(double velocityY) {
+		this.velocityY = velocityY;
 	}
 
 	/**
-	 * @param velocity_y the velocity_y to set
+	 * @return the width of the particle
 	 */
-	public void setVelocity_y(double velocity_y) {
-		this.velocity_y = velocity_y;
+	public int getWidth() {
+		return width;
 	}
-	
-	
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * @return the height of the particle
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
 }

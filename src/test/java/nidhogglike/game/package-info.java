@@ -5,4 +5,4 @@
  * @author Team 2
  *
  */
-package nidhogglike.surprise;
+package nidhogglike.game;

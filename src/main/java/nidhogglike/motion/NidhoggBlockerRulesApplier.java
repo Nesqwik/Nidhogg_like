@@ -5,16 +5,17 @@ import gameframework.motion.IllegalMoveException;
 import gameframework.motion.blocking.MoveBlocker;
 import gameframework.motion.blocking.MoveBlockerRulesApplierDefaultImpl;
 
+import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
-import nidhogglike.entities.Ground;
 import nidhogglike.entities.HeadBalloon;
-import nidhogglike.entities.Platform;
 import nidhogglike.entities.Player;
 import nidhogglike.entities.Sword;
-import nidhogglike.surprise.SurpriseGift;
+import nidhogglike.entities.bonus.SurpriseGift;
+import nidhogglike.entities.obstacles.Ground;
+import nidhogglike.entities.obstacles.Platform;
 
 public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultImpl {
 	/**
@@ -29,31 +30,28 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public void moveBlockerRule(final Player p, final Platform platform)
 			throws IllegalMoveException {
 
-		// This rule was done this way to avoid slowdowns provoked by the java exception system.
-		final int feetY = p.getPosition().y + p.getBoundingBox().height;
-		final int delta = platform.getBoundingBox().y - feetY;
-
-		// if the player is standing on the obstacle
-		if (Math.abs(delta) < 20) {
-			p.groundCollision(platform);
-		} else if (p.getVelocityY() < 0) {
-			p.roofCollision(platform);
-			throw new IllegalMoveException();
-		} else {
-			p.refinePositionAfterLateralCollision(platform);
-			throw new IllegalMoveException();
+		if (!p.getBoundingBox().intersects(platform.getBoundingBox()))
+			return;
+		else {
+			// This rule was done this way to avoid slowdowns provoked by the java exception system.
+			final int feetY = p.getPosition().y + p.getBoundingBox().height;
+			final Rectangle collision = p.getBoundingBox().intersection(platform.getBoundingBox());
+			if (collision.width > collision.height) {
+				if (p.getVelocityY() >= 0 && feetY < (platform.getBoundingBox().y + platform.getBoundingBox().height)) {
+						p.groundCollision(platform);
+				}
+			} else {
+				if (p.getVelocityY() <= 0 && !p.isJumping()) {
+					p.refinePositionAfterLateralCollision(platform);
+				}
+			}
 		}
 	}
 	public void moveBlockerRule(final HeadBalloon b, final Platform platform)
 			throws IllegalMoveException {
 
-		if (Math.abs(b.getVelocityY()) > Math.abs(b.getVelocityX())) {
-			b.platformCollision(platform);
-			throw new IllegalMoveException();
-		} else {
-			b.LateralCollision(platform);
-			throw new IllegalMoveException();
-		}
+		b.handleCollision(platform);
+		throw new IllegalMoveException();
 	}
 
 	public void moveBlockerRule(final HeadBalloon b, final Ground ground)
@@ -77,8 +75,6 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 		if (!s.isHeld()) {
 			s.setMoving(false);
 			s.groundCollision(p);
-		} else if (!s.getHolder().isJumping()) {
-			s.getHolder().refinePositionAfterLateralCollision(p);
 		}
 	}
 
@@ -105,6 +101,7 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 		return true;
 	}
 
+	@Override
 	protected void moveBlockerRuleApply(final GameMovable movable, final MoveBlocker blocker)
 			throws Exception {
 		Method m = null;
@@ -116,18 +113,16 @@ public class NidhoggBlockerRulesApplier extends MoveBlockerRulesApplierDefaultIm
 	public MoveBlocker getLastBlockingBlocker() {
 		return lastBlockingBlocker;
 	}
-	public void moveBlockerRule(SurpriseGift s, Ground ground)
+
+	public void moveBlockerRule(final SurpriseGift s, final Ground ground)
 			throws IllegalMoveException {
-		s.setMoving(false);
 		s.groundCollision(ground);
 	}
-	
-	public void moveBlockerRule(SurpriseGift s, Platform p)
+
+	public void moveBlockerRule(final SurpriseGift s, final Platform p)
 			throws IllegalMoveException {
-		
-		if (!s.getGift().isOpened()) {
-			s.setMoving(false);
-			s.groundCollision(p);
-		} 
+
+		s.setMoving(false);
+		s.groundCollision(p);
 	}
 }
