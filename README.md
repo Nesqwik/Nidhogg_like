@@ -14,7 +14,7 @@ He can throw it or directly strike his opponent.
 
 ## Install and launch the game : 
 * go to the framework folder and execute "mvn install"
-* go to the game folder and execute "mvn exec:java"
+* go to the game folder and execute "mvn exec:java" or "mvn exec:java -Dexec.args="-b" (to start the game with a bigger resolution)
 
 ## Controls : 
 **Player 1**
